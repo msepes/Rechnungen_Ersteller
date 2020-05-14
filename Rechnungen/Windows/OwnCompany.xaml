@@ -1,0 +1,40 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Rechnungen.Forms"
+        xmlns:Windows="clr-namespace:Rechnungen.Windows" xmlns:DATA="clr-namespace:DATA;assembly=DATA" x:Class="Rechnungen.Forms.OwnCompany"
+        mc:Ignorable="d"
+        Title="OwnCompany" Height="284" Width="555">
+    <Grid Height="264" VerticalAlignment="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="93*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="lblVorname" Content="Vorname" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="12,16,0,0" VerticalAlignment="Top" Width="70"/>
+        <Label x:Name="lblName" Content="Name" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="288,16,0,0" VerticalAlignment="Top" Width="56"/>
+        <Label x:Name="lblFirma" Content="Firma" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="12,48,0,0" VerticalAlignment="Top" Width="70"/>
+        <Label x:Name="lblTelefone" Content="Telefone" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="287,48,0,0" VerticalAlignment="Top" Width="57"/>
+        <Label x:Name="lblEmail" Content="Email" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="12,79,0,0" VerticalAlignment="Top" Width="70"/>
+        <Label x:Name="lblBankName" Content="BankName" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="12,110,0,0" VerticalAlignment="Top" Width="70"/>
+        <Label x:Name="lblIBAN" Content="IBAN" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="12,145,0,0" Width="70" VerticalAlignment="Top"/>
+        <Label x:Name="lblBIC" Content="BIC" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="312,110,0,0" VerticalAlignment="Top" Width="30"/>
+        <Label x:Name="lblSteuerNr" Content="SteuerNr" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="287,79,0,0" VerticalAlignment="Top" Width="57"/>
+
+        <Windows:Adresse x:Name="addAddress" HorizontalAlignment="Left" Height="75" Margin="0,171,0,0" VerticalAlignment="Top" Width="449"/>
+        <TextBox x:Name="txtVorname" HorizontalAlignment="Left" Margin="82,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtFirma" HorizontalAlignment="Left" Margin="82,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtEmail" HorizontalAlignment="Left" Margin="82,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtBank" HorizontalAlignment="Left" Margin="82,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtSteuerNr" HorizontalAlignment="Left" Margin="342,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtIBAN" HorizontalAlignment="Left" Margin="82,148,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="455"/>
+        <TextBox x:Name="txtName" HorizontalAlignment="Left" Margin="342,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtTelefone" HorizontalAlignment="Left" Margin="342,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtBIC" HorizontalAlignment="Left" Margin="342,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Left" Margin="454,191,0,0" VerticalAlignment="Top" Width="83" Height="35" Click="btnSave_Click"/>
+    </Grid>
+</Window>
