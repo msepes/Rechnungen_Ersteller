@@ -9,10 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="logo1.jpg" />
+    <None Remove="logo.jpg" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="iTextSharp" Version="5.5.13.1" />
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
 
@@ -21,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="logo1.jpg" />
+    <Resource Include="logo.jpg" />
   </ItemGroup>
 
   <ItemGroup>

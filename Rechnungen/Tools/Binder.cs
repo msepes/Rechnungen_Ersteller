@@ -15,13 +15,33 @@ namespace Rechnungen
             BindControl(Property, Source, ctrl, TextBox.TextProperty);
         }
 
+        public static void BindControl(string Property, object Source, DatePicker ctrl)
+        {
+            BindControl(Property, Source, ctrl, DatePicker.SelectedDateProperty);
+        }
+
+        public static void BindControl(string Property, object Source, ComboBox ctrl)
+        {
+            BindControl(Property, Source, ctrl, ComboBox.SelectedValueProperty);
+        }
+
         public static void Clear( TextBox ctrl)
         {
             Clear(ctrl, TextBox.TextProperty);
         }
 
+        public static void Clear(DatePicker ctrl)
+        {
+            Clear(ctrl, DatePicker.SelectedDateProperty);
+        }
+
+        public static void Clear(ComboBox ctrl)
+        {
+            Clear(ctrl, ComboBox.SelectedValueProperty);
+        }
         private static void BindControl(string Property, object Source,Control ctrl, DependencyProperty DependencyProperty)
         {
+            ctrl.IsEnabled = true;
             var Binding = new Binding(Property)
             {
                 Source = Source
@@ -30,8 +50,9 @@ namespace Rechnungen
             ctrl.SetBinding(DependencyProperty, Binding);
         }
 
-        private static void Clear(DependencyObject ctrl,DependencyProperty DependencyProperty) 
+        private static void Clear(Control ctrl,DependencyProperty DependencyProperty) 
         {
+            ctrl.IsEnabled = false;
             BindingOperations.ClearBinding(ctrl, DependencyProperty);
         }
     }

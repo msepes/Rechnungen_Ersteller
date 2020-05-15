@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -26,8 +27,8 @@ namespace Rechnungen
             Kunde.ID = kunden.Count() > 0 ? kunden.Max(k => k.ID) + 1 : 1;
             Kunde.Nr = kunden.Count() > 0 ? kunden.Max(k => k.Nr) + 1 : 1;
             Kunde.addresse = new Adresse();
-            Kunde.Rechnungen = new List<Rechnung>();
-            Kunde.Angebote = new List<Angebot>();
+            Kunde.Rechnungen = new ObservableCollection<Rechnung>();
+            Kunde.Angebote = new ObservableCollection<Angebot>();
             AdresseSet.Add(Kunde.addresse);
             KundenSet.Add(Kunde);
             Inserted.Add(Kunde);
@@ -54,7 +55,7 @@ namespace Rechnungen
             return GetAll(KundenSet);
         }
 
-        public static void AcceptChanges() 
+        public static void AcceptChanges()
         {
             Inserted.Clear();
         }

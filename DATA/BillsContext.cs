@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DATA
 {
-    public class LibraryContext : DbContext
+    public class BillsContext : DbContext
     {
         public DbSet<Rabbat> Rabbat { get; set; }
         public DbSet<Adresse> Adressen { get; set; }
@@ -19,7 +19,7 @@ namespace DATA
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL("server=localhost;database=library;user=root;password=Admin");
+            optionsBuilder.UseMySQL("server=localhost;database=Bills;user=root;password=Admin");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -80,6 +80,7 @@ namespace DATA
                 entity.HasKey(e => e.ID);
                 entity.Property(e => e.Einzeln_Preis).IsRequired();
                 entity.Property(e => e.Menge).IsRequired();
+                entity.Property(e => e.Beschreibung).IsRequired();
 
                 entity.HasOne(d => d.Rechnung)
                   .WithMany(p => p.Positions);

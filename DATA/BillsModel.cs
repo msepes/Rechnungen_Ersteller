@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace DATA
@@ -11,7 +14,7 @@ namespace DATA
         public string PLZ { get; set; }
         public string Strasse { get; set; }
         public string HasuNr { get; set; }
-        public ICollection<Kunde> Kunden { get; set; }
+        public ObservableCollection<Kunde> Kunden { get; set; }
     }
 
     public class Angebotsposition
@@ -38,8 +41,8 @@ namespace DATA
         public string FirmaName { get; set; }
         public long Nr { get; set; }
         public virtual Adresse addresse { get; set; }
-        public ICollection<Rechnung> Rechnungen { get; set; }
-        public ICollection<Angebot> Angebote { get; set; }
+        public ObservableCollection<Rechnung> Rechnungen { get; set; }
+        public ObservableCollection<Angebot> Angebote { get; set; }
     }
 
     public class Benutzer
@@ -66,7 +69,21 @@ namespace DATA
         public DateTime Datum { get; set; }
         public DateTime LeistungsDatum { get; set; }
         public Rabbat Rabbat { get; set; }
-        public virtual ICollection<Rechnungsposition> Positions { get; set; }
+        public virtual ObservableCollection<Rechnungsposition> Positions { get; set; }
+
+        public void ObservePostion(DbSet<Rechnungsposition> PositionSet)
+        {
+            Positions.CollectionChanged += (s, e) =>
+            {
+                var NewItems = e.NewItems.Count > 0 ? e.NewItems.Cast<object>().Select(o => (o as Rechnungsposition)).Where(o => o != null) : Enumerable.Empty<Rechnungsposition>();
+                foreach (var newEl in NewItems)
+                {
+                    if (PositionSet.Find(newEl.ID) == null)
+                        PositionSet.Add(newEl as Rechnungsposition);
+                    newEl.Rechnung = this;
+                }
+            };
+        }
     }
 
     public class Angebot
@@ -77,13 +94,14 @@ namespace DATA
         public Kunde Kunde { get; set; }
         public DateTime Datum { get; set; }
         public Rabbat Rabbat { get; set; }
-        public virtual ICollection<Angebotsposition> Positions { get; set; }
+        public virtual ObservableCollection<Angebotsposition> Positions { get; set; }
     }
 
     public class Rabbat
     {
         public long ID { get; set; }
         public double satz { get; set; }
+        public long Nr { get; set; }
         public string Beschreibung { get; set; }
     }
 

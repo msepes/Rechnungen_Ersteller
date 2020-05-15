@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Rechnungen.Windows"
         xmlns:UserControls="clr-namespace:Rechnungen.UserControls" x:Class="Rechnungen.Windows.Clients"
         mc:Ignorable="d"
-        Title="Clients" Height="340" Width="498"  ResizeMode="CanResize" Icon="/logo1.jpg">
+        Title="Clients" Height="340" Width="498"  ResizeMode="CanResize" Icon="/logo.jpg">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="41*"/>
@@ -25,11 +25,11 @@
             <Label x:Name="lblNummer" Content="Nummer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Width="74"/>
             <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="84,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" TextChanged="txtNummer_TextChanged"/>
             <local:Adresse x:Name="addAdress" HorizontalAlignment="Left" Height="100" Margin="0,84,0,0" VerticalAlignment="Top" Width="376"/>
-            <Button Content="Angebote" HorizontalAlignment="Left" Margin="280,49,0,0" VerticalAlignment="Top" Width="88" Height="34" Click="Button_Click"/>
-            <Button x:Name="btnRechnung" Content="Rechnungen" HorizontalAlignment="Left" Margin="280,7,0,0" VerticalAlignment="Top" Width="88" Height="34" Click="btnRechnung_Click"/>
+            <Button x:Name="btnOffers" Content="Angebote" HorizontalAlignment="Left" Margin="280,49,0,0" VerticalAlignment="Top" Width="88" Height="34" Click="Button_Click" IsEnabled="False"/>
+            <Button x:Name="btnRechnung" Content="Rechnungen" HorizontalAlignment="Left" Margin="280,7,0,0" VerticalAlignment="Top" Width="88" Height="34" Click="btnRechnung_Click" IsEnabled="False"/>
             <Label x:Name="lblFirma" Content="Firma" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Width="74"/>
             <TextBox x:Name="txtFirma" HorizontalAlignment="Left" Margin="84,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" TextChanged="txtFirma_TextChanged"/>
-            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,25,0" VerticalAlignment="Bottom" Width="88" Height="34" Click="btnSave_Click"/>
+            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,25,0" VerticalAlignment="Bottom" Width="88" Height="34" Click="btnSave_Click" IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>

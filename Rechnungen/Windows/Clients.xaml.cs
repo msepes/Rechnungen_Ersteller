@@ -22,6 +22,13 @@ namespace Rechnungen.Windows
     /// </summary>
     public partial class Clients : Window
     {
+
+        private Func<Kunde,Rechnung> NewRechnung;
+        private Func<long, Rechnung> GetRechnung;
+        private Func<IEnumerable<Rechnung>> GetRechnungen;
+        private Action<Rechnung> DeleteRechnung;
+        private Func<IEnumerable<Rabbat>> GetRabatte;
+
         private Func<Kunde> NewClient;
         private Func<long,Kunde> GetClient;
         private Action<Kunde> DeleteClient;
@@ -47,6 +54,19 @@ namespace Rechnungen.Windows
             fillList();
         }
 
+        public void RegisterRechnung(Func<Kunde,Rechnung> NewRechnung,
+                                     Func<long, Rechnung> GetRechnung,
+                                     Func<IEnumerable<Rechnung>> GetRechnungen,
+                                     Action<Rechnung> DeleteRechnung,
+                                     Func<IEnumerable<Rabbat>> GetRabatte)
+        {
+            this.NewRechnung = NewRechnung;
+            this.GetRechnung = GetRechnung;
+            this.GetRechnungen= GetRechnungen;
+            this.DeleteRechnung = DeleteRechnung;
+            this.GetRabatte = GetRabatte;
+        }
+
         private void fillList()
         {
             Unbind();
@@ -67,7 +87,6 @@ namespace Rechnungen.Windows
         private void bind(Kunde kunde) 
         {
             Unbind();
-
             BindControl(nameof(kunde.FirmaName), kunde, txtFirma);
             BindControl(nameof(kunde.Nr), kunde, txtNummer);
             addAdress.Bind(kunde.addresse);
@@ -78,29 +97,39 @@ namespace Rechnungen.Windows
             Clear(txtFirma);
             Clear(txtNummer);
             addAdress.unBind();
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var offer = new Offer();
-            offer.Show();
+
+            offer.ShowDialog();
         }
 
         private void btnRechnung_Click(object sender, RoutedEventArgs e)
         {
             var offer = new Bill();
-            offer.Show();
+            offer.Register( () => NewRechnung(GetSelectedKunde()),
+                            GetRechnung,
+                            GetRechnungen,
+                            Save,
+                            DeleteRechnung,
+                            GetRabatte
+                            );
+            offer.ShowDialog();
         }
 
         private void lstBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Unbind();
+            var selectedClient = GetSelectedKunde();
+            btnRechnung.IsEnabled = selectedClient != null;
+            btnOffers.IsEnabled = selectedClient != null;
+            btnSave.IsEnabled = selectedClient != null;
 
-            var ID = GetSelectedID();
-            if (!ID.HasValue)
+            if (selectedClient == null)
                 return;
-            var selectedClient = GetClient(ID.Value);
+
             bind(selectedClient);
         }
 
@@ -113,12 +142,7 @@ namespace Rechnungen.Windows
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            var ID = GetSelectedID();
-
-            if (!ID.HasValue)
-                return;
-
-            var selectedClient = GetClient(ID.Value);
+            var selectedClient = GetSelectedKunde();
             DeleteClient(selectedClient);
             lstBox.Items.Remove(lstBox.SelectedItem);
         }
@@ -128,6 +152,17 @@ namespace Rechnungen.Windows
             var item = lstBox.SelectedItem as ListBoxItem;
             return item?.EntityID;
         }
+
+        private Kunde GetSelectedKunde() 
+        {
+            var ID = GetSelectedID();
+
+            if (!ID.HasValue)
+                return null;
+
+          return GetClient(ID.Value);
+        }
+
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
@@ -167,9 +202,6 @@ namespace Rechnungen.Windows
                 return;
 
             item.Bezeichnung = $"{selectedClient.Nr}-{selectedClient.FirmaName}";
-            //lstBox.Items.Remove(item);
-            //var i = lstBox.Items.Add(item);
-            //lstBox.SelectedItem = lstBox.Items[0];
             lstBox.Items.Refresh();
         }
 
