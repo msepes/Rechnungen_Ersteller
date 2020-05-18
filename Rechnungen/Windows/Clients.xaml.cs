@@ -153,7 +153,6 @@ namespace Rechnungen.Windows
             var selectedClient = GetSelectedKunde();
             btnRechnung.IsEnabled = selectedClient != null;
             btnOffers.IsEnabled = selectedClient != null;
-            btnSave.IsEnabled = selectedClient != null;
 
             if (selectedClient == null)
                 return;
@@ -176,16 +175,32 @@ namespace Rechnungen.Windows
 
         private void New_Click(object sender, RoutedEventArgs e)
         {
-            var client = NewClient();
-            var i = lstBox.Items.Add(new ListBoxItem(client.ToString(), client.ID));
-            lstBox.SelectedItem = lstBox.Items[i];
+            try
+            {
+                var client = NewClient();
+                var i = lstBox.Items.Add(new ListBoxItem(client.ToString(), client.ID));
+                lstBox.SelectedItem = lstBox.Items[i];
+            }
+            catch (Exception ex)
+            {
+                ExceptionTools.HandleException(ex, this.GetType());
+            }
+        
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            var selectedClient = GetSelectedKunde();
-            DeleteClient(selectedClient);
-            lstBox.Items.Remove(lstBox.SelectedItem);
+            try
+            {
+                var selectedClient = GetSelectedKunde();
+                DeleteClient(selectedClient);
+                lstBox.Items.Remove(lstBox.SelectedItem);
+            }
+            catch (Exception ex)
+            {
+                ExceptionTools.HandleException(ex, this.GetType());
+            }
+        
         }
 
         private long? GetSelectedID()
@@ -214,11 +229,7 @@ namespace Rechnungen.Windows
             }
             catch (Exception ex)
             {
-                ex = ex.InnerException??ex;
-                var nl = Environment.NewLine;
-                Exception(ex, this.GetType());
-                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
-                MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
+                ExceptionTools.HandleException(ex, this.GetType());
             }
         }
 
@@ -254,11 +265,6 @@ namespace Rechnungen.Windows
                 return;
 
             item.IsEnabled = lstBox.SelectedItems?.Count > 0 && lstBox.SelectedItem != null;
-        }
-
-        private void test(object sender, EventArgs e)
-        {
-
         }
     }
 }

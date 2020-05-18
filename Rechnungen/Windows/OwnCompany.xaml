@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Rechnungen.Forms"
         xmlns:Windows="clr-namespace:Rechnungen.Windows" xmlns:DATA="clr-namespace:DATA;assembly=DATA" x:Class="Rechnungen.Forms.OwnCompany"
         mc:Ignorable="d"
-        Title="Eigene Firma" Height="284" Width="555" Icon="/logo.jpg">
+        Title="Eigene Firma" Height="284" Width="558" Icon="/logo.jpg">
     <Grid Height="264" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="93*"/>

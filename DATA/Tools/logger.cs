@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using log4net;
 
 namespace Rechnungen
 {
@@ -8,7 +8,7 @@ namespace Rechnungen
     {
         public static string Exception(Exception ex, Type typ)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(typ);
+            ILog log = LogManager.GetLogger(typ);
             StringBuilder strb = new StringBuilder();
 
             while (ex != null)

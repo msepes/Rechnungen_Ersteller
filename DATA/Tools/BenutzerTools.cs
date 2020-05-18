@@ -14,9 +14,7 @@ namespace Rechnungen
             var Benutzer = BenutzerSet.Include(be => be.addresse).FirstOrDefault();
 
             if (Benutzer != null)
-            {
                 return Benutzer;
-            }
 
             Benutzer = new Benutzer();
             Benutzer.addresse = new Adresse();
@@ -24,5 +22,7 @@ namespace Rechnungen
             BenutzerSet.Add(Benutzer);
             return Benutzer;
         }
+
+        public static bool Exsits(DbSet<Benutzer> BenutzerSet) => BenutzerSet.FirstOrDefault() != null;
     }
 }

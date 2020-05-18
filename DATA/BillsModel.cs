@@ -99,16 +99,16 @@ namespace DATA
         {
             var nett = Netto();
 
-            if (! (this.Rabbat?.satz > 1))
+            if (!(this.Rabbat?.satz > 1))
                 return nett;
 
-            return nett - (nett * (this.Rabbat.satz / 100));
+            return nett - this.Rabbat.satz / 100 * nett;
         }
 
         public double Summe() 
         {
-            var Net = MitRabatt();
-            return Net + ((this.Umsatzsteuer / 100) * Net);
+            var nett = MitRabatt();
+            return nett + this.Umsatzsteuer / 100 * nett;
         }
     }
 
@@ -143,13 +143,13 @@ namespace DATA
             if (!(this.Rabbat?.satz > 1))
                 return nett;
 
-            return nett - (nett * (this.Rabbat.satz / 100));
+            return nett - this.Rabbat.satz / 100 * nett  ;
         }
 
         public double Summe()
         {
-            var Net = MitRabatt();
-            return Net + ((this.Umsatzsteuer / 100) * Net);
+            var nett = MitRabatt();
+            return nett + this.Umsatzsteuer / 100 * nett;
         }
 
     }

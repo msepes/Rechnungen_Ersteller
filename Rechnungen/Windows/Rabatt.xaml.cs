@@ -85,8 +85,6 @@ namespace Rechnungen.Windows
 
             var ID = GetSelectedID();
 
-            btnSave.IsEnabled = ID.HasValue;
-
             if (!ID.HasValue)
                 return;
             var selectedClient = GetRabatt(ID.Value);
@@ -95,9 +93,18 @@ namespace Rechnungen.Windows
 
         private void New_Click(object sender, RoutedEventArgs e)
         {
-            var rabatt = NewRabatt();
-            var i = lstBox.Items.Add(new ListBoxItem(rabatt.ToString(), rabatt.ID));
-            lstBox.SelectedItem = lstBox.Items[i];
+            try
+            {
+                var rabatt = NewRabatt();
+                var i = lstBox.Items.Add(new ListBoxItem(rabatt.ToString(), rabatt.ID));
+                lstBox.SelectedItem = lstBox.Items[i];
+            }
+            catch (Exception ex)
+            {
+                ExceptionTools.HandleException(ex, this.GetType());
+            }
+
+           
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
@@ -107,9 +114,17 @@ namespace Rechnungen.Windows
             if (!ID.HasValue)
                 return;
 
-            var selectedRabatt = GetRabatt(ID.Value);
-            DeleteRabatt(selectedRabatt);
-            lstBox.Items.Remove(lstBox.SelectedItem);
+            try
+            {
+                var selectedRabatt = GetRabatt(ID.Value);
+                DeleteRabatt(selectedRabatt);
+                lstBox.Items.Remove(lstBox.SelectedItem);
+            }
+            catch (Exception ex)
+            {
+                ExceptionTools.HandleException(ex, this.GetType());
+            }
+         
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -121,12 +136,9 @@ namespace Rechnungen.Windows
             }
             catch (Exception ex)
             {
-                ex = ex.InnerException ?? ex;
-                var nl = Environment.NewLine;
-                Exception(ex, this.GetType());
-                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
-                MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
+                ExceptionTools.HandleException(ex, this.GetType());
             }
         }
+
     }
 }

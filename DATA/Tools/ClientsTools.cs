@@ -13,10 +13,7 @@ namespace Rechnungen
     {
         private static List<Kunde> Inserted = new List<Kunde>();
 
-        private static IEnumerable<Kunde> GetAll(DbSet<Kunde> KundenSet) 
-        {
-            return KundenSet.Include(k => k.addresse).Include(k => k.Rechnungen).Include(k => k.Angebote).ToList().Concat(Inserted);
-        }
+   
 
         public static Kunde NewKunde(DbSet<Kunde> KundenSet, DbSet<Adresse> AdresseSet)
         {
@@ -42,22 +39,23 @@ namespace Rechnungen
             if (KundenSet.Find(Client.ID) == null)
                 throw new Exception($"DeleteKunde -> Kunde mit dem ID '{Client.ID}' wurde nicht gefunden");
 
+            var RechnungenCount = Client.Rechnungen.Count;
+            if (RechnungenCount > 0) 
+                throw new Exception($"Der Kunde hat {RechnungenCount} Rechnung, daher kann nicht gelöscht werden");
+
+            var AngeboteCount = Client.Angebote.Count;
+            if (AngeboteCount > 0)
+                throw new Exception($"Der Kunde hat {AngeboteCount} Angebote, daher kann nicht gelöscht werden");
+
             KundenSet.Remove(Client);
         }
 
-        public static Kunde GetKunde(DbSet<Kunde> KundenSet, long ID)
-        {
-            return GetKunden(KundenSet).FirstOrDefault(k => k.ID == ID);
-        }
+        private static IEnumerable<Kunde> GetAll(DbSet<Kunde> KundenSet) => KundenSet.Include(k => k.addresse).Include(k => k.Rechnungen).Include(k => k.Angebote).ToList().Concat(Inserted);
 
-        public static IEnumerable<Kunde> GetKunden(DbSet<Kunde> KundenSet)
-        {
-            return GetAll(KundenSet);
-        }
+        public static Kunde GetKunde(DbSet<Kunde> KundenSet, long ID) => GetKunden(KundenSet).FirstOrDefault(k => k.ID == ID);
 
-        public static void AcceptChanges()
-        {
-            Inserted.Clear();
-        }
+        public static IEnumerable<Kunde> GetKunden(DbSet<Kunde> KundenSet) => GetAll(KundenSet);
+
+        public static void AcceptChanges() => Inserted.Clear();
     }
 }

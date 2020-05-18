@@ -41,10 +41,13 @@ namespace Rechnungen
         }
 
 
-        public static void DeleteRechnung(DbSet<Rechnung> RechnungSet, Rechnung Bill)
+        public static void DeleteRechnung(DbSet<Rechnung> RechnungSet, DbSet<Rechnungsposition> RechnungspositionSet, Rechnung Bill)
         {
             if (RechnungSet.Find(Bill.ID) == null)
                 throw new Exception($"DeleteRechnung -> Rechnung mit dem ID '{Bill.ID}' wurde nicht gefunden");
+
+            if(Bill.Positions?.Count > 0)
+             RechnungspositionSet.RemoveRange(Bill.Positions);
 
             RechnungSet.Remove(Bill);
         }
@@ -98,7 +101,7 @@ namespace Rechnungen
                 Paragraph prgHeading = new Paragraph();
                 Font fntHead = new Font(baseFont, 20, 1, BaseColor.BLACK);
                 prgHeading.Alignment = Element.ALIGN_CENTER;
-                prgHeading.Add(new Chunk("MAXCLEAN", fntHead));
+                prgHeading.Add(new Chunk(Benutzer.FirmaName, fntHead));
                 doc.Add(prgHeading);
 
                 Paragraph OwnCompany = new Paragraph();

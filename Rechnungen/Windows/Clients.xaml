@@ -29,7 +29,7 @@
             <Button x:Name="btnRechnung" Content="Rechnungen" HorizontalAlignment="Left" Margin="164,0,0,13" VerticalAlignment="Bottom" Width="96" Height="20" Click="btnRechnung_Click" IsEnabled="False"/>
             <Label x:Name="lblFirma" Content="Firma" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="74"/>
             <TextBox x:Name="txtFirma" HorizontalAlignment="Left" Margin="79,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" TextChanged="txtFirma_TextChanged"/>
-            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Left" Margin="265,0,0,13" VerticalAlignment="Bottom" Width="96" Height="20" Click="btnSave_Click" IsEnabled="False"/>
+            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Left" Margin="265,0,0,13" VerticalAlignment="Bottom" Width="96" Height="20" Click="btnSave_Click"/>
             <Label x:Name="lblGesamt" Content="Gesamt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="63,0,0,38" VerticalAlignment="Bottom" Width="74"/>
             <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="137,0,0,42" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="224" TextChanged="txtFirma_TextChanged" IsEnabled="False"/>
         </Grid>

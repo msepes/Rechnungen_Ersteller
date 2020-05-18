@@ -32,7 +32,7 @@
             <DataGrid x:Name="dgrPositionen" Margin="6,128,6,53" SizeChanged="dgrPositionen_SizeChanged"/>
             <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="63,0,0,20" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="149" IsEnabled="False"/>
             <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,6,13" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnSave_Click"/>
-            <Button x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right" Margin="0,0,97,13" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnDrucken_Click"/>
+            <Button x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right" Margin="0,0,97,13" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnDrucken_Click" IsEnabled="False"/>
             <ComboBox x:Name="cboRabatt" HorizontalAlignment="Left" Margin="66,65,0,0" VerticalAlignment="Top" Width="368"/>
             <Label x:Name="lblRabatt" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top" Width="56"/>
             <Label x:Name="lblClient" Content="Kunde" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Width="56"/>

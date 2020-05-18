@@ -16,10 +16,6 @@ namespace Angeboten
     {
         private static List<Angebot> Inserted = new List<Angebot>();
 
-        private static IEnumerable<Angebot> GetAll(DbSet<Angebot> AngebotSet)
-        {
-            return AngebotSet.Include(k => k.Positions).Include(k => k.Rabbat).Include(k => k.Kunde).Include(k => k.Kunde.addresse).ToList().Concat(Inserted);
-        }
 
         public static Angebot NewAngebot(DbSet<Angebot> AngebotSet, Kunde client)
         {
@@ -38,35 +34,32 @@ namespace Angeboten
             return Angebot;
         }
 
-
-        public static void DeleteAngebot(DbSet<Angebot> AngebotSet, Angebot Bill)
+        public static void DeleteAngebot(DbSet<Angebot> AngebotSet, DbSet<Angebotsposition> AngebotspositionSet, Angebot Offer)
         {
-            if (AngebotSet.Find(Bill.ID) == null)
-                throw new Exception($"DeleteAngebot -> Angebot mit dem ID '{Bill.ID}' wurde nicht gefunden");
+            if (AngebotSet.Find(Offer.ID) == null)
+                throw new Exception($"DeleteAngebot -> Angebot mit dem ID '{Offer.ID}' wurde nicht gefunden");
 
-            AngebotSet.Remove(Bill);
+            if (Offer.Positions?.Count > 0)
+                AngebotspositionSet.RemoveRange(Offer.Positions);
+
+            AngebotSet.Remove(Offer);
         }
 
-        public static Angebot GetAngebot(DbSet<Angebot> AngebotSet, long ID)
-        {
-            return GetAngeboten(AngebotSet).FirstOrDefault(k => k.ID == ID);
-        }
+        public static void AcceptChanges() => 
+               Inserted.Clear();
 
-        public static IEnumerable<Angebot> GetAngeboten(DbSet<Angebot> AngebotSet)
-        {
-            return GetAll(AngebotSet);
-        }
+        public static IEnumerable<Angebot> GetAngeboten(DbSet<Angebot> AngebotSet) => 
+               GetAll(AngebotSet);
 
-        public static IEnumerable<Angebot> GetAngeboten(DbSet<Angebot> AngebotSet, Kunde client)
-        {
-            return GetAll(AngebotSet).Where(r => r.Kunde.ID == client.ID);
-        }
+        public static Angebot GetAngebot(DbSet<Angebot> AngebotSet, long ID) => 
+               GetAngeboten(AngebotSet).FirstOrDefault(k => k.ID == ID);
 
-        public static void AcceptChanges()
-        {
-            Inserted.Clear();
-        }
+        public static IEnumerable<Angebot> GetAngeboten(DbSet<Angebot> AngebotSet, Kunde client) => 
+               GetAll(AngebotSet).Where(r => r.Kunde.ID == client.ID);
 
+        private static IEnumerable<Angebot> GetAll(DbSet<Angebot> AngebotSet) => 
+               AngebotSet.Include(k => k.Positions).Include(k => k.Rabbat).Include(k => k.Kunde).Include(k => k.Kunde.addresse).ToList().Concat(Inserted);
+        
         public static void PrintOffer(Angebot Angebot, Benutzer Benutzer, string path)
         {
             if (Angebot == null)
@@ -96,7 +89,7 @@ namespace Angeboten
                 Paragraph prgHeading = new Paragraph();
                 Font fntHead = new Font(baseFont, 20, 1, BaseColor.BLACK);
                 prgHeading.Alignment = Element.ALIGN_CENTER;
-                prgHeading.Add(new Chunk("MAXCLEAN", fntHead));
+                prgHeading.Add(new Chunk(Benutzer.FirmaName, fntHead));
                 doc.Add(prgHeading);
 
                 Paragraph OwnCompany = new Paragraph();

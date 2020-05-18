@@ -26,6 +26,14 @@ namespace Rechnungen
         {
             InitializeComponent();
             Init();
+
+            bool Exsits = BenutzerTools.Exsits(context.Benutzer);
+            while (!Exsits) {
+                var nl = Environment.NewLine;
+                MessageBox.Show($"Ihre Firma-Daten sind noch nicht vollständig eingegeben.{nl}Bitte geben Sie die Daten vollständig ein, danach einfach auf Speichern drücken.", "Einge Firma", MessageBoxButton.OK, MessageBoxImage.Information);
+                ShowOwnCompanyWindow();
+                Exsits = BenutzerTools.Exsits(context.Benutzer);
+            }
         }
 
         private void Init()
@@ -37,10 +45,7 @@ namespace Rechnungen
             }
             catch (Exception ex)
             {
-                Exception(ex, this.GetType());
-                var nl = Environment.NewLine;
-                var msg = $"Fehler beim Laden:{nl + nl}{ex.Message}{nl}{ex.InnerException?.Message}";
-                MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
+                ExceptionTools.HandleException(ex, this.GetType());
                 Environment.Exit(1);
             }
         }
@@ -87,6 +92,11 @@ namespace Rechnungen
 
         private void OwnCompany_Click(object sender, RoutedEventArgs e)
         {
+            ShowOwnCompanyWindow();
+        }
+
+        private void ShowOwnCompanyWindow() 
+        {
             var frm = new OwnCompany();
             frm.Register(() => GetBenutzer(context.Benutzer, context.Adressen), () => context.SaveChanges());
             ShowWindow(frm);
@@ -104,14 +114,14 @@ namespace Rechnungen
             frm.RegisterRechnung((k) => RechnungTools.NewRechnung(context.Rechnungen, k),
                                  (ID) => RechnungTools.GetRechnung(context.Rechnungen, ID),
                                  (k) => RechnungTools.GetRechnungen(context.Rechnungen, k),
-                                 (r) => RechnungTools.DeleteRechnung(context.Rechnungen, r),
+                                 (r) => RechnungTools.DeleteRechnung(context.Rechnungen, context.Rechnungsposition, r),
                                  () => context.Rabbat,
                                  (rechnung,path) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen), path));
 
             frm.RegisterAngebot((k) => OfferTools.NewAngebot(context.Angebote, k),
                                 (ID) => OfferTools.GetAngebot(context.Angebote, ID),
                                 (k) => OfferTools.GetAngeboten(context.Angebote, k),
-                                (r) => OfferTools.DeleteAngebot(context.Angebote, r),
+                                (r) => OfferTools.DeleteAngebot(context.Angebote, context.Angebotsposition, r),
                                 () => context.Rabbat,
                                 (rechnung, path) => OfferTools.PrintOffer(rechnung, GetBenutzer(context.Benutzer, context.Adressen), path));
 
@@ -147,7 +157,7 @@ namespace Rechnungen
             frm.Register(() => RabattTools.NewRabatt(context.Rabbat),
                          (ID) => RabattTools.GetRabatt(context.Rabbat, ID),
                          () => RabattTools.GetRabatte(context.Rabbat),
-                         (r) => RabattTools.DeleteRabatt(context.Rabbat, r),
+                         (r) => RabattTools.DeleteRabatt(context.Rabbat, context.Rechnungen, context.Angebote, r),
                          () => context.SaveChanges());
             ShowWindow(frm);
         }
@@ -166,10 +176,7 @@ namespace Rechnungen
             }
             catch (Exception ex)
             {
-                Exception(ex, window.GetType());
-                var nl = Environment.NewLine;
-                var msg = $"Fehler beim Öffnen vom Formular.{nl + nl}{ex.Message}{nl}{ex.InnerException?.Message}";
-                MessageBox.Show(window, msg, "Formular Öffnen", MessageBoxButton.OK, MessageBoxImage.Error);
+                ExceptionTools.HandleException(ex, window.GetType());
             }
         }
     }

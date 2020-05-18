@@ -36,7 +36,7 @@
             <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,10,14" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnSave_Click"/>
             <Label x:Name="lblLeistungsdatum" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="Leistungsdatum" Margin="296,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="98"/>
             <DatePicker x:Name="dtpLeistungsdatum" HorizontalAlignment="Left" Margin="393,43,0,0" VerticalAlignment="Top" Width="197"/>
-            <Button x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right" Margin="0,0,99,14" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnDrucken_Click"/>
+            <Button x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right" Margin="0,0,99,14" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnDrucken_Click" IsEnabled="False"/>
             <ComboBox x:Name="cboRabatt" HorizontalAlignment="Left" Margin="78,76,0,0" VerticalAlignment="Top" Width="512"/>
             <Label x:Name="lblRabatt" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="22,74,0,0" VerticalAlignment="Top" Width="56"/>
             <Label x:Name="lblClient" Content="Kunde" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="11,105,0,0" VerticalAlignment="Top" Width="68"/>

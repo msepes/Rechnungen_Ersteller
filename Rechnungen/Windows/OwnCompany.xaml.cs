@@ -18,8 +18,6 @@ namespace Rechnungen.Forms
         public OwnCompany()
         {
             InitializeComponent();
-
-
         }
 
         public void Register(Func<Benutzer> GetBenutzer, Action Save) 
@@ -43,8 +41,6 @@ namespace Rechnungen.Forms
             addAddress.Bind(Benutzer.addresse);
         }
 
-      
-
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -54,11 +50,7 @@ namespace Rechnungen.Forms
             }
             catch (Exception ex)
             {
-                ex = ex.InnerException ?? ex;
-                var nl = Environment.NewLine;
-                Exception(ex, this.GetType());
-                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
-                MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
+                ExceptionTools.HandleException(ex, this.GetType());
             }
         }
     }

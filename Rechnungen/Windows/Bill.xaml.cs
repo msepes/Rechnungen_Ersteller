@@ -27,7 +27,7 @@ namespace Rechnungen.Windows
         private Action<Rechnung> DeleteRechnung;
         private Func<IEnumerable<Rechnung>> GetRechnungen;
         private Func<IEnumerable<Rabbat>> GetRabatte;
-        private Action<Rechnung,string> Print;
+        private Action<Rechnung, string> Print;
         private Action Save;
 
         public Bill()
@@ -95,8 +95,7 @@ namespace Rechnungen.Windows
 
         private void BindGrid(Rechnung Rechnung)
         {
-            var Positions = Rechnung?.Positions;
-            dgrPositionen.ItemsSource = Positions;
+            dgrPositionen.IsEnabled = true;
 
             dgrPositionen.Columns.CollectionChanged += (s, e) =>
             {
@@ -111,8 +110,10 @@ namespace Rechnungen.Windows
                 foreach (var column in Newcolumns)
                     column.Visibility = Visibility.Hidden;
 
-                SetColumnsSize();
+                GridTools.SetColumnsSize(dgrPositionen);
             };
+
+            dgrPositionen.ItemsSource = Rechnung?.Positions;
         }
 
         private void FillRabatte()
@@ -140,7 +141,7 @@ namespace Rechnungen.Windows
             Clear(dtpLeistungsdatum);
             Clear(dtpDatum);
             Clear(cboRabatt);
-            cboRabatt.SelectedItem = null;
+            Clear(dgrPositionen);
         }
 
         private void btnDrucken_Click(object sender, RoutedEventArgs e)
@@ -151,6 +152,7 @@ namespace Rechnungen.Windows
                 if (Rechnung == null)
                     return;
 
+                Save();
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.FileName = @$"Rechnung_{Rechnung.Kunde.FirmaName}_{Rechnung.Datum.ToShortDateString()}_{Rechnung.Nr}.pdf";
 
@@ -166,13 +168,10 @@ namespace Rechnungen.Windows
             }
             catch (Exception ex)
             {
-                var nl = Environment.NewLine;
-                Exception(ex,this.GetType());
-                var msg = $"Fehler beim Rechnung-Drucken.{nl + nl}{ex.Message}{Environment.NewLine}{ex.InnerException?.Message}";
-                MessageBox.Show(this, msg, "Rechnung-Drucken", MessageBoxButton.OK, MessageBoxImage.Error);
+                Exception(ex, this.GetType());
             }
 
-            
+
         }
 
         private long? GetSelectedID()
@@ -186,6 +185,9 @@ namespace Rechnungen.Windows
             Unbind();
 
             var ID = GetSelectedID();
+
+            btnDrucken.IsEnabled = ID.HasValue;
+
             if (!ID.HasValue)
                 return;
             var selectedBill = GetRechnung(ID.Value);
@@ -204,26 +206,38 @@ namespace Rechnungen.Windows
             }
             catch (Exception ex)
             {
-                ex = ex.InnerException ?? ex;
-                var nl = Environment.NewLine;
-                Exception(ex, this.GetType());
-                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
-                MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
+                ExceptionTools.HandleException(ex, this.GetType());
             }
         }
 
         private void New_Click(object sender, RoutedEventArgs e)
         {
-            var Rechnung = NewRechnung();
-            var i = lstBox.Items.Add(new ListBoxItem(Rechnung.ToString(), Rechnung.ID));
-            lstBox.SelectedItem = lstBox.Items[i];
+            try
+            {
+                var Rechnung = NewRechnung();
+                var i = lstBox.Items.Add(new ListBoxItem(Rechnung.ToString(), Rechnung.ID));
+                lstBox.SelectedItem = lstBox.Items[i];
+            }
+            catch (Exception ex)
+            {
+                ExceptionTools.HandleException(ex, this.GetType());
+            }
+
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            var selectedBill = GetSelectedRechnung();
-            DeleteRechnung(selectedBill);
-            lstBox.Items.Remove(lstBox.SelectedItem);
+            try
+            {
+                var selectedBill = GetSelectedRechnung();
+                DeleteRechnung(selectedBill);
+                lstBox.Items.Remove(lstBox.SelectedItem);
+            }
+            catch (Exception ex)
+            {
+                ExceptionTools.HandleException(ex, this.GetType());
+            }
+
         }
 
         private Rechnung GetSelectedRechnung()
@@ -247,27 +261,7 @@ namespace Rechnungen.Windows
 
         private void dgrPositionen_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            SetColumnsSize();
-        }
-
-        private void SetColumnsSize() 
-        {
-            foreach (var column in dgrPositionen.Columns) { 
-                switch ((string)column.Header)
-                {
-                    case "ID":
-                    case "Rechnung":
-                        break;
-                    case "Beschreibung":
-                        if (dgrPositionen.ActualWidth > 0) column.Width = dgrPositionen.ActualWidth * 0.7;
-                        break;
-                    case "Menge":
-                    case "Einzeln_Preis":
-                        if (dgrPositionen.ActualWidth > 0) column.Width = dgrPositionen.ActualWidth * 0.15;
-                        break;
-                }
-            }
-
+            GridTools.SetColumnsSize(dgrPositionen);
         }
     }
 }

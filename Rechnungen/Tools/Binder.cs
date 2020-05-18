@@ -23,12 +23,20 @@ namespace Rechnungen
         public static void BindControl(string Property, object Source, ComboBox ctrl)
         {
             BindControl(Property, Source, ctrl, ComboBox.SelectedValueProperty);
+            ctrl.SelectedItem = null;
         }
 
         public static void Clear( TextBox ctrl)
         {
             Clear(ctrl, TextBox.TextProperty);
         }
+
+        public static void Clear(DataGrid ctrl)
+        {
+            ctrl.ItemsSource = null;
+            ctrl.IsEnabled = false;
+        }
+
 
         public static void Clear(DatePicker ctrl)
         {
