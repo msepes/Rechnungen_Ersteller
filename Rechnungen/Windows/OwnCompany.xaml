@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Rechnungen.Forms"
         xmlns:Windows="clr-namespace:Rechnungen.Windows" xmlns:DATA="clr-namespace:DATA;assembly=DATA" x:Class="Rechnungen.Forms.OwnCompany"
         mc:Ignorable="d"
-        Title="OwnCompany" Height="284" Width="555">
+        Title="Eigene Firma" Height="284" Width="555" Icon="/logo.jpg">
     <Grid Height="264" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="93*"/>
@@ -28,12 +28,12 @@
         <Windows:Adresse x:Name="addAddress" HorizontalAlignment="Left" Height="75" Margin="0,171,0,0" VerticalAlignment="Top" Width="449"/>
         <TextBox x:Name="txtVorname" HorizontalAlignment="Left" Margin="82,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
         <TextBox x:Name="txtFirma" HorizontalAlignment="Left" Margin="82,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
-        <TextBox x:Name="txtEmail" HorizontalAlignment="Left" Margin="82,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtEmail" HorizontalAlignment="Left" Margin="82,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195" InputScope="EmailUserName"/>
         <TextBox x:Name="txtBank" HorizontalAlignment="Left" Margin="82,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
         <TextBox x:Name="txtSteuerNr" HorizontalAlignment="Left" Margin="342,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
         <TextBox x:Name="txtIBAN" HorizontalAlignment="Left" Margin="82,148,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="455"/>
         <TextBox x:Name="txtName" HorizontalAlignment="Left" Margin="342,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
-        <TextBox x:Name="txtTelefone" HorizontalAlignment="Left" Margin="342,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
+        <TextBox x:Name="txtTelefone" HorizontalAlignment="Left" Margin="342,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195" InputScope="TelephoneNumber"/>
         <TextBox x:Name="txtBIC" HorizontalAlignment="Left" Margin="342,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195"/>
         <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Left" Margin="454,191,0,0" VerticalAlignment="Top" Width="83" Height="35" Click="btnSave_Click"/>
     </Grid>

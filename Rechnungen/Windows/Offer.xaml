@@ -6,28 +6,37 @@
         xmlns:local="clr-namespace:Rechnungen.Windows"
         xmlns:UserControls="clr-namespace:Rechnungen.UserControls" x:Class="Rechnungen.Windows.Offer"
         mc:Ignorable="d"
-        Title="Offer" Height="408" Width="576">
+        Title="Angebote" Height="408" Width="576" Icon="/logo.jpg">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="31*"/>
             <ColumnDefinition Width="129*"/>
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0,17,0,10" Width="6"/>
-        <ListBox x:Name="lstBox" />
+        <ListBox x:Name="lstBox" SelectionChanged="lstBox_SelectionChanged" ContextMenuOpening="lstBox_ContextMenuOpening">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name ="NEW" Header="Neues Angebot" Click="New_Click" />
+                    <MenuItem Name="DELETE" Header="Angebot löschen" Click="Delete_Click" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox >
         <Grid x:Name="panel1" Grid.Column="1"  Margin="11,0,0,0">
             <Label x:Name="lblNummer" Content="Nummer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" Width="56"/>
             <Label x:Name="lblUmsatz" Content="Umsatzsteuer" Margin="276,3,0,0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left" Width="83"/>
             <Label x:Name="lblDatum" Content="Datum" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" Width="56"/>
             <Label x:Name="lblGesamt" Content="Gesamt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="7,0,0,16" VerticalAlignment="Bottom" Width="51"/>
-            <TextBox HorizontalAlignment="Left" Margin="66,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" Height="26" InputScope="Number"/>
+            <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="66,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" Height="26" InputScope="Number"/>
             <TextBox x:Name="txtUmsatz" HorizontalAlignment="Left" Margin="359,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Height="26" InputScope="Number" Text="19"/>
             <DatePicker x:Name="dtpDatum" HorizontalAlignment="Left" Margin="66,36,0,0" VerticalAlignment="Top" Width="202"/>
-            <DataGrid x:Name="dgrPositionen" Margin="6,91,6,53"/>
-            <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="63,0,0,20" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="120"/>
-            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,6,13" VerticalAlignment="Bottom" Width="86" Height="32"/>
-            <Button x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right" Margin="0,0,97,13" VerticalAlignment="Bottom" Width="86" Height="32"/>
-            <ComboBox x:Name="cboRabatt" HorizontalAlignment="Left" Margin="66,65,0,0" VerticalAlignment="Top" Width="202"/>
+            <DataGrid x:Name="dgrPositionen" Margin="6,128,6,53" SizeChanged="dgrPositionen_SizeChanged"/>
+            <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="63,0,0,20" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="149" IsEnabled="False"/>
+            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,6,13" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnSave_Click"/>
+            <Button x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right" Margin="0,0,97,13" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnDrucken_Click"/>
+            <ComboBox x:Name="cboRabatt" HorizontalAlignment="Left" Margin="66,65,0,0" VerticalAlignment="Top" Width="368"/>
             <Label x:Name="lblRabatt" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top" Width="56"/>
+            <Label x:Name="lblClient" Content="Kunde" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Width="56"/>
+            <TextBox x:Name="txtClient" HorizontalAlignment="Left" Margin="66,92,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="368" Height="26" InputScope="Number" IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>

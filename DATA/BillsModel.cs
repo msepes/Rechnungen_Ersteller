@@ -15,6 +15,11 @@ namespace DATA
         public string Strasse { get; set; }
         public string HasuNr { get; set; }
         public ObservableCollection<Kunde> Kunden { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Strasse} {HasuNr}{Environment.NewLine}{PLZ} {Ort}";
+        }
     }
 
     public class Angebotsposition
@@ -43,6 +48,11 @@ namespace DATA
         public virtual Adresse addresse { get; set; }
         public ObservableCollection<Rechnung> Rechnungen { get; set; }
         public ObservableCollection<Angebot> Angebote { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Nr} - {FirmaName}";
+        }
     }
 
     public class Benutzer
@@ -71,18 +81,34 @@ namespace DATA
         public Rabbat Rabbat { get; set; }
         public virtual ObservableCollection<Rechnungsposition> Positions { get; set; }
 
-        public void ObservePostion(DbSet<Rechnungsposition> PositionSet)
+        public override string ToString()
         {
-            Positions.CollectionChanged += (s, e) =>
-            {
-                var NewItems = e.NewItems.Count > 0 ? e.NewItems.Cast<object>().Select(o => (o as Rechnungsposition)).Where(o => o != null) : Enumerable.Empty<Rechnungsposition>();
-                foreach (var newEl in NewItems)
-                {
-                    if (PositionSet.Find(newEl.ID) == null)
-                        PositionSet.Add(newEl as Rechnungsposition);
-                    newEl.Rechnung = this;
-                }
-            };
+            return $"{Nr} - {Datum.ToShortDateString()}";
+        }
+
+        public double Netto() 
+        {
+            var sum = this.Positions?.Select(p => p.Einzeln_Preis * p.Menge).Sum();
+            if (!sum.HasValue)
+                return 0.0;
+
+            return sum.Value;
+        }
+
+        public double MitRabatt()
+        {
+            var nett = Netto();
+
+            if (! (this.Rabbat?.satz > 1))
+                return nett;
+
+            return nett - (nett * (this.Rabbat.satz / 100));
+        }
+
+        public double Summe() 
+        {
+            var Net = MitRabatt();
+            return Net + ((this.Umsatzsteuer / 100) * Net);
         }
     }
 
@@ -95,6 +121,37 @@ namespace DATA
         public DateTime Datum { get; set; }
         public Rabbat Rabbat { get; set; }
         public virtual ObservableCollection<Angebotsposition> Positions { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Nr} - {Datum.ToShortDateString()}";
+        }
+
+        public double Netto()
+        {
+            var sum = this.Positions?.Select(p => p.Einzeln_Preis * p.Menge).Sum();
+            if (!sum.HasValue)
+                return 0.0;
+
+            return sum.Value;
+        }
+
+        public double MitRabatt()
+        {
+            var nett = Netto();
+
+            if (!(this.Rabbat?.satz > 1))
+                return nett;
+
+            return nett - (nett * (this.Rabbat.satz / 100));
+        }
+
+        public double Summe()
+        {
+            var Net = MitRabatt();
+            return Net + ((this.Umsatzsteuer / 100) * Net);
+        }
+
     }
 
     public class Rabbat
@@ -103,6 +160,13 @@ namespace DATA
         public double satz { get; set; }
         public long Nr { get; set; }
         public string Beschreibung { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Beschreibung} - {satz}%";
+        }
+
+
     }
 
 }

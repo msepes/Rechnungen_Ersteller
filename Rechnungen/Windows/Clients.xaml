@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Rechnungen.Windows"
         xmlns:UserControls="clr-namespace:Rechnungen.UserControls" x:Class="Rechnungen.Windows.Clients"
         mc:Ignorable="d"
-        Title="Clients" Height="340" Width="498"  ResizeMode="CanResize" Icon="/logo.jpg">
+        Title="Kunden" Height="340" Width="498"  ResizeMode="CanResize" Icon="/logo.jpg">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="41*"/>
@@ -22,14 +22,16 @@
             </ListBox.ContextMenu>
         </ListBox>
         <Grid x:Name="panel1" Grid.Column="1"  Margin="11,0,0,10">
-            <Label x:Name="lblNummer" Content="Nummer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Width="74"/>
-            <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="84,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" TextChanged="txtNummer_TextChanged"/>
-            <local:Adresse x:Name="addAdress" HorizontalAlignment="Left" Height="100" Margin="0,84,0,0" VerticalAlignment="Top" Width="376"/>
-            <Button x:Name="btnOffers" Content="Angebote" HorizontalAlignment="Left" Margin="280,49,0,0" VerticalAlignment="Top" Width="88" Height="34" Click="Button_Click" IsEnabled="False"/>
-            <Button x:Name="btnRechnung" Content="Rechnungen" HorizontalAlignment="Left" Margin="280,7,0,0" VerticalAlignment="Top" Width="88" Height="34" Click="btnRechnung_Click" IsEnabled="False"/>
-            <Label x:Name="lblFirma" Content="Firma" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Width="74"/>
-            <TextBox x:Name="txtFirma" HorizontalAlignment="Left" Margin="84,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" TextChanged="txtFirma_TextChanged"/>
-            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,25,0" VerticalAlignment="Bottom" Width="88" Height="34" Click="btnSave_Click" IsEnabled="False"/>
+            <Label x:Name="lblNummer" Content="Nummer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,32,0,0" VerticalAlignment="Top" Width="74"/>
+            <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="79,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" TextChanged="txtNummer_TextChanged" InputScope="Number"/>
+            <local:Adresse x:Name="addAdress" HorizontalAlignment="Left" Height="77" VerticalAlignment="Top" Width="373" Margin="5,64,0,0"/>
+            <Button x:Name="btnOffers" Content="Angebote" HorizontalAlignment="Left" Margin="63,0,0,12" VerticalAlignment="Bottom" Width="96" Height="21" Click="Button_Click" IsEnabled="False"/>
+            <Button x:Name="btnRechnung" Content="Rechnungen" HorizontalAlignment="Left" Margin="164,0,0,13" VerticalAlignment="Bottom" Width="96" Height="20" Click="btnRechnung_Click" IsEnabled="False"/>
+            <Label x:Name="lblFirma" Content="Firma" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="74"/>
+            <TextBox x:Name="txtFirma" HorizontalAlignment="Left" Margin="79,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" TextChanged="txtFirma_TextChanged"/>
+            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Left" Margin="265,0,0,13" VerticalAlignment="Bottom" Width="96" Height="20" Click="btnSave_Click" IsEnabled="False"/>
+            <Label x:Name="lblGesamt" Content="Gesamt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="63,0,0,38" VerticalAlignment="Bottom" Width="74"/>
+            <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="137,0,0,42" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="224" TextChanged="txtFirma_TextChanged" IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>

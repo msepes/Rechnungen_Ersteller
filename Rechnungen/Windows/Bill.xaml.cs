@@ -1,24 +1,19 @@
-﻿using System.IO;
-using iTextSharp.text;
-using iTextSharp.text.html.simpleparser;
-using iTextSharp.text.pdf;
+﻿using DATA;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using DATA;
+using System.IO;
 using System.Linq;
-using static Rechnungen.logger;
-using static Rechnungen.Binder;
 using System.Data;
-using Microsoft.EntityFrameworkCore;
+using System.Windows;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.Windows.Controls;
+using static Rechnungen.Binder;
+using static Rechnungen.logger;
+using System.Collections.Generic;
+using iTextSharp.text.html.simpleparser;
+using Microsoft.Win32;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Rechnungen.Windows
 {
@@ -32,11 +27,15 @@ namespace Rechnungen.Windows
         private Action<Rechnung> DeleteRechnung;
         private Func<IEnumerable<Rechnung>> GetRechnungen;
         private Func<IEnumerable<Rabbat>> GetRabatte;
+        private Action<Rechnung,string> Print;
         private Action Save;
 
         public Bill()
         {
             InitializeComponent();
+            TextBoxTools.MakeAcceptDigits(txtNummer);
+            TextBoxTools.MakeAcceptDigits(txtUmsatz);
+            GridTools.MakeAcceptDigits(dgrPositionen);
         }
 
         public void Register(Func<Rechnung> NewRechnung,
@@ -44,7 +43,8 @@ namespace Rechnungen.Windows
                              Func<IEnumerable<Rechnung>> GetRechnungen,
                              Action Save,
                              Action<Rechnung> DeleteRechnung,
-                             Func<IEnumerable<Rabbat>> GetRabatte)
+                             Func<IEnumerable<Rabbat>> GetRabatte,
+                             Action<Rechnung, string> Print)
         {
 
             this.NewRechnung = NewRechnung;
@@ -52,10 +52,29 @@ namespace Rechnungen.Windows
             this.DeleteRechnung = DeleteRechnung;
             this.GetRechnungen = GetRechnungen;
             this.GetRabatte = GetRabatte;
+            this.Print = Print;
             this.Save = Save;
 
             FillRabatte();
             fillList();
+        }
+
+        public void Register(Func<long, Rechnung> GetRechnung,
+                             Func<IEnumerable<Rechnung>> GetRechnungen,
+                             Action Save,
+                             Func<IEnumerable<Rabbat>> GetRabatte,
+                             Action<Rechnung, string> Print)
+        {
+            this.GetRechnung = GetRechnung;
+            this.GetRechnungen = GetRechnungen;
+            this.GetRabatte = GetRabatte;
+            this.Print = Print;
+            this.Save = Save;
+
+            FillRabatte();
+            fillList();
+
+            lstBox.ContextMenu.Items.Clear();
         }
 
         private void fillList()
@@ -64,7 +83,7 @@ namespace Rechnungen.Windows
             lstBox.Items.Clear();
             lstBox.SelectionMode = SelectionMode.Single;
             lstBox.DisplayMemberPath = "Bezeichnung";
-            var items = GetRechnungen().Select(Rechnung => new ListBoxItem($"{Rechnung.Nr} - {Rechnung.Datum.ToShortDateString()}", Rechnung.ID));
+            var items = GetRechnungen().Select(Rechnung => new ListBoxItem(Rechnung.ToString(), Rechnung.ID));
             foreach (var item in items)
                 lstBox.Items.Add(item);
 
@@ -74,27 +93,33 @@ namespace Rechnungen.Windows
             lstBox.SelectedItem = lstBox.Items[0];
         }
 
-        private void BindGrid()
+        private void BindGrid(Rechnung Rechnung)
         {
-            var Positions = GetSelectedRechnung()?.Positions;
+            var Positions = Rechnung?.Positions;
             dgrPositionen.ItemsSource = Positions;
 
-            var col = dgrPositionen.Columns.FirstOrDefault(c => (string)c.Header == "ID");
-            if(col != null)
-                col.Visibility = Visibility.Hidden;
+            dgrPositionen.Columns.CollectionChanged += (s, e) =>
+            {
+                if (e.NewItems == null || e.NewItems.Count < 1)
+                    return;
 
-             col = dgrPositionen.Columns.FirstOrDefault(c => (string)c.Header == "Rechnung");
-            if (col != null)
-                col.Visibility = Visibility.Hidden;
+                var Newcolumns = e.NewItems.Cast<object>()
+                                         .Select(o => o as DataGridColumn)
+                                         .Where(o => o != null)
+                                         .Where(o => (string)o.Header == "ID" || (string)o.Header == "Rechnung");
+
+                foreach (var column in Newcolumns)
+                    column.Visibility = Visibility.Hidden;
+
+                SetColumnsSize();
+            };
         }
 
-        private void FillRabatte() 
+        private void FillRabatte()
         {
             var rabatte = GetRabatte();
             foreach (var rabatt in rabatte)
                 cboRabatt.Items.Add(rabatt);
-
-           cboRabatt.DisplayMemberPath = "Beschreibung";
         }
 
         private void bind(Rechnung Rechnung)
@@ -105,7 +130,7 @@ namespace Rechnungen.Windows
             BindControl(nameof(Rechnung.LeistungsDatum), Rechnung, dtpLeistungsdatum);
             BindControl(nameof(Rechnung.Datum), Rechnung, dtpDatum);
             BindControl(nameof(Rechnung.Rabbat), Rechnung, cboRabatt);
-            BindGrid();
+            BindGrid(Rechnung);
         }
 
         private void Unbind()
@@ -115,18 +140,39 @@ namespace Rechnungen.Windows
             Clear(dtpLeistungsdatum);
             Clear(dtpDatum);
             Clear(cboRabatt);
+            cboRabatt.SelectedItem = null;
         }
 
         private void btnDrucken_Click(object sender, RoutedEventArgs e)
         {
-            var html = File.ReadAllText(@"D:\ss.html");
-            var document = new Document(); //PageSize.A4, 15f, 15f, 75f, 75f
-            var str = new FileStream(@"D:\htmlDocument.pdf", FileMode.OpenOrCreate);
-            PdfWriter.GetInstance(document, str);
-            document.Open();
-            var hw = new HTMLWorker(document);
-            hw.Parse(new StringReader(html));
-            document.Close();
+            try
+            {
+                var Rechnung = GetSelectedRechnung();
+                if (Rechnung == null)
+                    return;
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.FileName = @$"Rechnung_{Rechnung.Kunde.FirmaName}_{Rechnung.Datum.ToShortDateString()}_{Rechnung.Nr}.pdf";
+
+                if (saveFileDialog.ShowDialog() != true)
+                    return;
+
+                Print(Rechnung, saveFileDialog.FileName);
+
+                var startInfo = new ProcessStartInfo(saveFileDialog.FileName);
+                startInfo.UseShellExecute = true;
+                Process.Start(startInfo);
+
+            }
+            catch (Exception ex)
+            {
+                var nl = Environment.NewLine;
+                Exception(ex,this.GetType());
+                var msg = $"Fehler beim Rechnung-Drucken.{nl + nl}{ex.Message}{Environment.NewLine}{ex.InnerException?.Message}";
+                MessageBox.Show(this, msg, "Rechnung-Drucken", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            
         }
 
         private long? GetSelectedID()
@@ -145,25 +191,8 @@ namespace Rechnungen.Windows
             var selectedBill = GetRechnung(ID.Value);
 
             bind(selectedBill);
-
-            var sum = selectedBill.Positions?.Select(p => p.Einzeln_Preis * p.Menge).Sum();
-            if (!sum.HasValue)
-            { 
-                txtGesamt.Text = "0";
-                return;
-            }
-
-            var SummeMitSteuer = sum.Value + ((selectedBill.Umsatzsteuer/100) * sum.Value);
-
-            var rabattSatz = selectedBill.Rabbat?.satz;
-
-            if (!rabattSatz.HasValue) { 
-                txtGesamt.Text = $"{SummeMitSteuer}";
-                return;
-            }
-            var SummeMitRabatt = SummeMitSteuer - (SummeMitSteuer * (rabattSatz.Value/100));
-            txtGesamt.Text = $"{SummeMitRabatt}";
-
+            txtGesamt.Text = $"{selectedBill.Summe()} €";
+            txtClient.Text = selectedBill.Kunde?.ToString();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -171,13 +200,14 @@ namespace Rechnungen.Windows
             try
             {
                 Save();
-                fillList();
+                this.Close();
             }
             catch (Exception ex)
             {
-                ex = ex.InnerException;
+                ex = ex.InnerException ?? ex;
                 var nl = Environment.NewLine;
-                var msg = $"Speichern nicht möglich.{nl + nl}{Exception(ex)}";
+                Exception(ex, this.GetType());
+                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
                 MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -185,7 +215,7 @@ namespace Rechnungen.Windows
         private void New_Click(object sender, RoutedEventArgs e)
         {
             var Rechnung = NewRechnung();
-            var i = lstBox.Items.Add(new ListBoxItem($"{Rechnung.Nr} - {Rechnung.Datum.ToShortDateString()}", Rechnung.ID));
+            var i = lstBox.Items.Add(new ListBoxItem(Rechnung.ToString(), Rechnung.ID));
             lstBox.SelectedItem = lstBox.Items[i];
         }
 
@@ -196,7 +226,7 @@ namespace Rechnungen.Windows
             lstBox.Items.Remove(lstBox.SelectedItem);
         }
 
-        private Rechnung GetSelectedRechnung() 
+        private Rechnung GetSelectedRechnung()
         {
             var ID = GetSelectedID();
 
@@ -213,6 +243,31 @@ namespace Rechnungen.Windows
                 return;
 
             item.IsEnabled = lstBox.SelectedItems?.Count > 0 && lstBox.SelectedItem != null;
+        }
+
+        private void dgrPositionen_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SetColumnsSize();
+        }
+
+        private void SetColumnsSize() 
+        {
+            foreach (var column in dgrPositionen.Columns) { 
+                switch ((string)column.Header)
+                {
+                    case "ID":
+                    case "Rechnung":
+                        break;
+                    case "Beschreibung":
+                        if (dgrPositionen.ActualWidth > 0) column.Width = dgrPositionen.ActualWidth * 0.7;
+                        break;
+                    case "Menge":
+                    case "Einzeln_Preis":
+                        if (dgrPositionen.ActualWidth > 0) column.Width = dgrPositionen.ActualWidth * 0.15;
+                        break;
+                }
+            }
+
         }
     }
 }

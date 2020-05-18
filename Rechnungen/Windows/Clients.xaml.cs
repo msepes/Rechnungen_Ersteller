@@ -1,19 +1,11 @@
 ﻿using DATA;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using static Rechnungen.logger;
 using static Rechnungen.Binder;
+using System.Collections.Generic;
 
 namespace Rechnungen.Windows
 {
@@ -22,26 +14,34 @@ namespace Rechnungen.Windows
     /// </summary>
     public partial class Clients : Window
     {
+        private Func<Kunde, Angebot> NewAngebot;
+        private Func<long, Angebot> GetAngebot;
+        private Func<Kunde, IEnumerable<Angebot>> GetAngebote;
+        private Action<Angebot> DeleteAngebot;
+        private Action<Angebot, string> PrintOffer;
 
-        private Func<Kunde,Rechnung> NewRechnung;
+
+        private Func<Kunde, Rechnung> NewRechnung;
         private Func<long, Rechnung> GetRechnung;
-        private Func<IEnumerable<Rechnung>> GetRechnungen;
+        private Func<Kunde, IEnumerable<Rechnung>> GetRechnungen;
         private Action<Rechnung> DeleteRechnung;
+        private Action<Rechnung,string> PrintBill;
         private Func<IEnumerable<Rabbat>> GetRabatte;
 
         private Func<Kunde> NewClient;
-        private Func<long,Kunde> GetClient;
+        private Func<long, Kunde> GetClient;
         private Action<Kunde> DeleteClient;
-        private Func< IEnumerable<Kunde>> GetClients;
+        private Func<IEnumerable<Kunde>> GetClients;
         private Action Save;
 
         public Clients()
         {
             InitializeComponent();
+            TextBoxTools.MakeAcceptDigits(txtNummer);
         }
 
-        public void Register(Func<Kunde> NewClient, 
-                             Func<long, Kunde> GetClient, 
+        public void Register(Func<Kunde> NewClient,
+                             Func<long, Kunde> GetClient,
                              Func<IEnumerable<Kunde>> GetClients,
                              Action Save,
                              Action<Kunde> DeleteClient)
@@ -54,16 +54,33 @@ namespace Rechnungen.Windows
             fillList();
         }
 
-        public void RegisterRechnung(Func<Kunde,Rechnung> NewRechnung,
+        public void RegisterRechnung(Func<Kunde, Rechnung> NewRechnung,
                                      Func<long, Rechnung> GetRechnung,
-                                     Func<IEnumerable<Rechnung>> GetRechnungen,
+                                     Func<Kunde, IEnumerable<Rechnung>> GetRechnungen,
                                      Action<Rechnung> DeleteRechnung,
-                                     Func<IEnumerable<Rabbat>> GetRabatte)
+                                     Func<IEnumerable<Rabbat>> GetRabatte,
+                                     Action<Rechnung, string> PrintBill)
         {
             this.NewRechnung = NewRechnung;
             this.GetRechnung = GetRechnung;
-            this.GetRechnungen= GetRechnungen;
+            this.GetRechnungen = GetRechnungen;
             this.DeleteRechnung = DeleteRechnung;
+            this.GetRabatte = GetRabatte;
+            this.PrintBill = PrintBill;
+        }
+
+        public void RegisterAngebot(Func<Kunde, Angebot> NewAngebot,
+                                    Func<long, Angebot> GetAngebot,
+                                    Func<Kunde, IEnumerable<Angebot>> GetAngebote,
+                                    Action<Angebot> DeleteAngebot,
+                                    Func<IEnumerable<Rabbat>> GetRabatte,
+                                    Action<Angebot, string> PrintOffer)
+        {
+            this.NewAngebot = NewAngebot;
+            this.GetAngebot = GetAngebot;
+            this.GetAngebote = GetAngebote;
+            this.DeleteAngebot = DeleteAngebot;
+            this.PrintOffer = PrintOffer;
             this.GetRabatte = GetRabatte;
         }
 
@@ -73,7 +90,7 @@ namespace Rechnungen.Windows
             lstBox.Items.Clear();
             lstBox.SelectionMode = SelectionMode.Single;
             lstBox.DisplayMemberPath = "Bezeichnung";
-            var items = GetClients().Select(c => new ListBoxItem($"{c.Nr}-{c.FirmaName}", c.ID));
+            var items = GetClients().Select(c => new ListBoxItem(c.ToString(), c.ID));
             foreach (var item in items)
                 lstBox.Items.Add(item);
 
@@ -84,7 +101,7 @@ namespace Rechnungen.Windows
 
         }
 
-        private void bind(Kunde kunde) 
+        private void bind(Kunde kunde)
         {
             Unbind();
             BindControl(nameof(kunde.FirmaName), kunde, txtFirma);
@@ -102,21 +119,32 @@ namespace Rechnungen.Windows
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var offer = new Offer();
-
-            offer.ShowDialog();
+            var kunde = GetSelectedKunde();
+            offer.Register(() => NewAngebot(kunde),
+                           GetAngebot,
+                           () => GetAngebote(kunde),
+                           Save,
+                           DeleteAngebot,
+                           GetRabatte,
+                           PrintOffer
+                           );
+            MainWindow.ShowWindow(offer);
         }
 
         private void btnRechnung_Click(object sender, RoutedEventArgs e)
         {
-            var offer = new Bill();
-            offer.Register( () => NewRechnung(GetSelectedKunde()),
+            var bill = new Bill();
+            var kunde = GetSelectedKunde();
+            bill.Register(() => NewRechnung(kunde),
                             GetRechnung,
-                            GetRechnungen,
+                            () => GetRechnungen(kunde),
                             Save,
                             DeleteRechnung,
-                            GetRabatte
+                            GetRabatte,
+                            PrintBill
                             );
-            offer.ShowDialog();
+            MainWindow.ShowWindow(bill);
+            SetGesamt();
         }
 
         private void lstBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -131,12 +159,25 @@ namespace Rechnungen.Windows
                 return;
 
             bind(selectedClient);
+            SetGesamt();
+        }
+
+        private void SetGesamt()
+        {
+            var selectedClient = GetSelectedKunde();
+            if (selectedClient == null)
+            {
+                txtGesamt.Text = "0 €";
+                return;
+            }
+            txtGesamt.Text = $"{selectedClient.Rechnungen.Select(r => r.Summe()).Sum()} €";
+
         }
 
         private void New_Click(object sender, RoutedEventArgs e)
         {
             var client = NewClient();
-            var i = lstBox.Items.Add(new ListBoxItem($"{client.Nr}-{client.FirmaName}", client.ID));
+            var i = lstBox.Items.Add(new ListBoxItem(client.ToString(), client.ID));
             lstBox.SelectedItem = lstBox.Items[i];
         }
 
@@ -147,20 +188,20 @@ namespace Rechnungen.Windows
             lstBox.Items.Remove(lstBox.SelectedItem);
         }
 
-        private long? GetSelectedID() 
+        private long? GetSelectedID()
         {
             var item = lstBox.SelectedItem as ListBoxItem;
             return item?.EntityID;
         }
 
-        private Kunde GetSelectedKunde() 
+        private Kunde GetSelectedKunde()
         {
             var ID = GetSelectedID();
 
             if (!ID.HasValue)
                 return null;
 
-          return GetClient(ID.Value);
+            return GetClient(ID.Value);
         }
 
 
@@ -169,13 +210,14 @@ namespace Rechnungen.Windows
             try
             {
                 Save();
-                fillList();
+                this.Close();
             }
             catch (Exception ex)
             {
-                ex = ex.InnerException;
+                ex = ex.InnerException??ex;
                 var nl = Environment.NewLine;
-                var msg = $"Speichern nicht möglich.{nl + nl}{Exception(ex)}";
+                Exception(ex, this.GetType());
+                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
                 MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -190,7 +232,7 @@ namespace Rechnungen.Windows
             UpdateSelectedItem();
         }
 
-        private void UpdateSelectedItem() 
+        private void UpdateSelectedItem()
         {
             var item = (lstBox.SelectedItem as ListBoxItem);
             if (item == null)
@@ -201,7 +243,7 @@ namespace Rechnungen.Windows
             if (selectedClient == null)
                 return;
 
-            item.Bezeichnung = $"{selectedClient.Nr}-{selectedClient.FirmaName}";
+            item.Bezeichnung = selectedClient.ToString();
             lstBox.Items.Refresh();
         }
 
@@ -212,6 +254,11 @@ namespace Rechnungen.Windows
                 return;
 
             item.IsEnabled = lstBox.SelectedItems?.Count > 0 && lstBox.SelectedItem != null;
+        }
+
+        private void test(object sender, EventArgs e)
+        {
+
         }
     }
 }

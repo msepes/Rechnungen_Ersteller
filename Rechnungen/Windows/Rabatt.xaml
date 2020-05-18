@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rechnungen.Windows"
         mc:Ignorable="d"
-        Title="Rabatt" Height="294" Width="800">
+        Title="Rabatt" Height="294" Width="800" Icon="/logo.jpg">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="31*"/>
@@ -22,12 +22,12 @@
         </ListBox>
         <Grid x:Name="panel1" Grid.Column="1"  Margin="11,0,0,0">
             <Label x:Name="lblBeschreibung" Content="Beschreibung" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" Width="85"/>
-            <Label x:Name="lblSatz" Content="Satz" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="181,34,0,0" VerticalAlignment="Top" Width="90"/>
+            <Label x:Name="lblSatz" Content="Satz" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,65,0,0" VerticalAlignment="Top" Width="90"/>
             <TextBox x:Name="txtBeschreibung" Margin="100,3,12,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" InputScope="Number"/>
-            <TextBox x:Name="txtSatz" HorizontalAlignment="Left" Margin="271,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Height="26" InputScope="Number" Text="10"/>
+            <TextBox x:Name="txtSatz" HorizontalAlignment="Left" Margin="100,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" Height="26" InputScope="Number" Text="10" MaxLength="2"/>
             <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,34,12,0" VerticalAlignment="Top" Width="86" Height="32" Click="btnSave_Click"/>
             <Label x:Name="lblNr" Content="Nummer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" Width="90"/>
-            <TextBox x:Name="txtNr" HorizontalAlignment="Left" Margin="100,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Height="26" InputScope="Number"/>
+            <TextBox x:Name="txtNr" HorizontalAlignment="Left" Margin="100,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" Height="26" InputScope="Number"/>
         </Grid>
     </Grid>
 </Window>

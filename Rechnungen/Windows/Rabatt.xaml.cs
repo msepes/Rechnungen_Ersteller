@@ -1,18 +1,11 @@
 ﻿using DATA;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using static Rechnungen.logger;
 using static Rechnungen.Binder;
-using System.Linq;
+using System.Windows.Controls;
+using System.Collections.Generic;
 
 namespace Rechnungen.Windows
 {
@@ -44,6 +37,8 @@ namespace Rechnungen.Windows
         public Rabatt()
         {
             InitializeComponent();
+            TextBoxTools.MakeAcceptDigits(txtNr);
+            TextBoxTools.MakeAcceptDigits(txtSatz);
         }
 
         private void bind(Rabbat rabatt)
@@ -67,7 +62,7 @@ namespace Rechnungen.Windows
             lstBox.Items.Clear();
             lstBox.SelectionMode = SelectionMode.Single;
             lstBox.DisplayMemberPath = "Bezeichnung";
-            var items = GetRabatte().Select(c => new ListBoxItem($"{c.Nr} - {c.satz}%", c.ID));
+            var items = GetRabatte().Select(r => new ListBoxItem(r.ToString(), r.ID));
             foreach (var item in items)
                 lstBox.Items.Add(item);
 
@@ -101,7 +96,7 @@ namespace Rechnungen.Windows
         private void New_Click(object sender, RoutedEventArgs e)
         {
             var rabatt = NewRabatt();
-            var i = lstBox.Items.Add(new ListBoxItem($"{rabatt.Nr} - {rabatt.satz}%", rabatt.ID));
+            var i = lstBox.Items.Add(new ListBoxItem(rabatt.ToString(), rabatt.ID));
             lstBox.SelectedItem = lstBox.Items[i];
         }
 
@@ -122,13 +117,14 @@ namespace Rechnungen.Windows
             try
             {
                 Save();
-                fillList();
+                this.Close();
             }
             catch (Exception ex)
             {
-                ex = ex.InnerException;
+                ex = ex.InnerException ?? ex;
                 var nl = Environment.NewLine;
-                var msg = $"Speichern nicht möglich.{nl + nl}{Exception(ex)}";
+                Exception(ex, this.GetType());
+                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
                 MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

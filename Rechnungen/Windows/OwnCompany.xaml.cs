@@ -1,17 +1,6 @@
 ﻿using DATA;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using static Rechnungen.logger;
 using static Rechnungen.Binder;
 
@@ -29,6 +18,8 @@ namespace Rechnungen.Forms
         public OwnCompany()
         {
             InitializeComponent();
+
+
         }
 
         public void Register(Func<Benutzer> GetBenutzer, Action Save) 
@@ -59,12 +50,14 @@ namespace Rechnungen.Forms
             try
             {
                 Save();
+                this.Close();
             }
             catch (Exception ex)
             {
-                ex = ex.InnerException;
+                ex = ex.InnerException ?? ex;
                 var nl = Environment.NewLine;
-                var msg = $"Speichern nicht möglich.{nl+ nl}{Exception(ex)}";
+                Exception(ex, this.GetType());
+                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
                 MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

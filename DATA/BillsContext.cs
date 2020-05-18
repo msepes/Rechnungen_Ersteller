@@ -8,6 +8,14 @@ namespace DATA
 {
     public class BillsContext : DbContext
     {
+        private string ConnectionString = string.Empty;
+
+
+        public BillsContext(string connectionString)
+        {
+            ConnectionString = connectionString;
+        }
+
         public DbSet<Rabbat> Rabbat { get; set; }
         public DbSet<Adresse> Adressen { get; set; }
         public DbSet<Kunde> Kunden { get; set; }
@@ -19,7 +27,7 @@ namespace DATA
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL("server=localhost;database=Bills;user=root;password=Admin");
+            optionsBuilder.UseMySQL(ConnectionString); //"server=localhost;database=Bills;user=root;password=Admin"
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,6 +55,7 @@ namespace DATA
             {
                 entity.HasKey(e => e.ID);
                 entity.Property(e => e.FirmaName).IsRequired();
+
                 entity.HasOne(d => d.addresse)
                   .WithMany(p => p.Kunden);
             });
@@ -106,10 +115,32 @@ namespace DATA
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.Vorname).IsRequired();
                 entity.Property(e => e.FirmaName).IsRequired();
-
                 entity.HasOne(d => d.addresse);
             });
         }
 
+        public void RollBack()
+        {
+            var changedEntries = this.ChangeTracker.Entries()
+                .Where(x => x.State != EntityState.Unchanged).ToList();
+
+            foreach (var entry in changedEntries)
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.CurrentValues.SetValues(entry.OriginalValues);
+                        entry.State = EntityState.Unchanged;
+                        break;
+                    case EntityState.Added:
+                        entry.State = EntityState.Detached;
+                        break;
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Unchanged;
+                        break;
+                }
+            }
+        }
     }
+    
 }

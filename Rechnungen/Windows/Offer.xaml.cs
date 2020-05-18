@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DATA;
+using System;
+using System.IO;
+using System.Linq;
 using System.Windows;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using static Rechnungen.Binder;
+using static Rechnungen.logger;
+using System.Collections.Generic;
+using iTextSharp.text.html.simpleparser;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace Rechnungen.Windows
 {
@@ -17,9 +20,243 @@ namespace Rechnungen.Windows
     /// </summary>
     public partial class Offer : Window
     {
+        private Func<Angebot> NewAngebot;
+        private Func<long, Angebot> GetAngebot;
+        private Action<Angebot> DeleteAngebot;
+        private Func<IEnumerable<Angebot>> GetAngeboten;
+        private Func<IEnumerable<Rabbat>> GetRabatte;
+        private Action Save;
+        private Action<Angebot, string> Print;
         public Offer()
         {
             InitializeComponent();
+            TextBoxTools.MakeAcceptDigits(txtNummer);
+            TextBoxTools.MakeAcceptDigits(txtUmsatz);
+            GridTools.MakeAcceptDigits(dgrPositionen);
+        }
+
+        public void Register(Func<Angebot> NewAngebot,
+                             Func<long, Angebot> GetAngebot,
+                             Func<IEnumerable<Angebot>> GetAngeboten,
+                             Action Save,
+                             Action<Angebot> DeleteAngebot,
+                             Func<IEnumerable<Rabbat>> GetRabatte,
+                             Action<Angebot, string> Print)
+        {
+
+            this.NewAngebot = NewAngebot;
+            this.GetAngebot = GetAngebot;
+            this.DeleteAngebot = DeleteAngebot;
+            this.GetAngeboten = GetAngeboten;
+            this.GetRabatte = GetRabatte;
+            this.Print = Print;
+            this.Save = Save;
+
+            FillRabatte();
+            fillList();
+        }
+
+        public void Register(Func<long, Angebot> GetAngebot,
+                             Func<IEnumerable<Angebot>> GetAngeboten,
+                             Action Save,
+                             Func<IEnumerable<Rabbat>> GetRabatte,
+                             Action<Angebot, string> Print)
+        {
+
+            this.GetAngebot = GetAngebot;
+            this.GetAngeboten = GetAngeboten;
+            this.GetRabatte = GetRabatte;
+            this.Print = Print;
+            this.Save = Save;
+
+            FillRabatte();
+            fillList();
+            lstBox.ContextMenu.Items.Clear();
+        }
+
+        private void fillList()
+        {
+            Unbind();
+            lstBox.Items.Clear();
+            lstBox.SelectionMode = SelectionMode.Single;
+
+            var items = GetAngeboten().Select(Angebot => new ListBoxItem(Angebot.ToString(), Angebot.ID));
+            foreach (var item in items)
+                lstBox.Items.Add(item);
+
+            if (lstBox.Items.Count < 1)
+                return;
+
+            lstBox.SelectedItem = lstBox.Items[0];
+        }
+
+        private void BindGrid()
+        {
+            var Positions = GetSelectedAngebot()?.Positions;
+            dgrPositionen.ItemsSource = Positions;
+
+            dgrPositionen.Columns.CollectionChanged += (s, e) =>
+            {
+                if (e.NewItems == null || e.NewItems.Count < 1)
+                    return;
+
+                var Newcolumns = e.NewItems.Cast<object>()
+                                           .Select(o => o as DataGridColumn)
+                                           .Where(o => o != null)
+                                           .Where(o => (string)o.Header == "ID" || (string)o.Header == "Angebot");
+
+                foreach (var column in Newcolumns)
+                    column.Visibility = Visibility.Hidden;
+
+                SetColumnsSize();
+
+            };
+        }
+
+        private void FillRabatte()
+        {
+            var rabatte = GetRabatte();
+            foreach (var rabatt in rabatte)
+                cboRabatt.Items.Add(rabatt);
+        }
+
+        private void bind(Angebot Angebot)
+        {
+            Unbind();
+            BindControl(nameof(Angebot.Nr), Angebot, txtNummer);
+            BindControl(nameof(Angebot.Umsatzsteuer), Angebot, txtUmsatz);
+            BindControl(nameof(Angebot.Datum), Angebot, dtpDatum);
+            BindControl(nameof(Angebot.Rabbat), Angebot, cboRabatt);
+            BindGrid();
+        }
+
+        private void Unbind()
+        {
+            Clear(txtNummer);
+            Clear(txtUmsatz);
+            Clear(dtpDatum);
+            Clear(cboRabatt);
+        }
+
+        private void btnDrucken_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var Angebot = GetSelectedAngebot();
+                if (Angebot == null)
+                    return;
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.FileName = @$"Angebot_{Angebot.Kunde.FirmaName}_{Angebot.Datum.ToShortDateString()}_{Angebot.Nr}.pdf";
+
+                if (saveFileDialog.ShowDialog() != true)
+                    return;
+
+                Print(Angebot, saveFileDialog.FileName);
+
+                var startInfo = new ProcessStartInfo(saveFileDialog.FileName);
+                startInfo.UseShellExecute = true;
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                var nl = Environment.NewLine;
+                Exception(ex, this.GetType());
+                var msg = $"Fehler beim Angebot-Drucken.{nl + nl}{ex.Message}{Environment.NewLine}{ex.InnerException?.Message}";
+                MessageBox.Show(this, msg, "Angebot-Drucken", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private long? GetSelectedID()
+        {
+            var item = lstBox.SelectedItem as ListBoxItem;
+            return item?.EntityID;
+        }
+
+        private void lstBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Unbind();
+
+            var ID = GetSelectedID();
+            if (!ID.HasValue)
+                return;
+            var selectedOffer = GetAngebot(ID.Value);
+            bind(selectedOffer);
+            txtGesamt.Text = $"{selectedOffer.Summe()} €";
+            txtClient.Text = selectedOffer.Kunde?.ToString();
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Save();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                ex = ex.InnerException ?? ex;
+                var nl = Environment.NewLine;
+                Exception(ex,this.GetType());
+                var msg = $"Speichern nicht möglich.{nl + nl}{ex.Message}";
+                MessageBox.Show(this, msg, "Speichern nicht möglich", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void New_Click(object sender, RoutedEventArgs e)
+        {
+            var Angebot = NewAngebot();
+            var i = lstBox.Items.Add(new ListBoxItem(Angebot.ToString(), Angebot.ID));
+            lstBox.SelectedItem = lstBox.Items[i];
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedBill = GetSelectedAngebot();
+            DeleteAngebot(selectedBill);
+            lstBox.Items.Remove(lstBox.SelectedItem);
+        }
+
+        private Angebot GetSelectedAngebot()
+        {
+            var ID = GetSelectedID();
+
+            if (!ID.HasValue)
+                return null;
+
+            return GetAngebot(ID.Value);
+        }
+
+        private void lstBox_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var item = lstBox.ContextMenu.Items.Cast<MenuItem>().FirstOrDefault(i => i.Name == "DELETE");
+            if (item == null)
+                return;
+
+            item.IsEnabled = lstBox.SelectedItems?.Count > 0 && lstBox.SelectedItem != null;
+        }
+
+        private void dgrPositionen_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SetColumnsSize();
+        }
+
+        private void SetColumnsSize()
+        {
+            foreach (var column in dgrPositionen.Columns)
+                switch ((string)column.Header)
+                {
+                    case "ID":
+                    case "Angebot":
+                        break;
+                    case "Beschreibung":
+                        if (dgrPositionen.ActualWidth > 0) column.Width = dgrPositionen.ActualWidth * 0.7;
+                        break;
+                    case "Menge":
+                    case "Einzeln_Preis":
+                        if (dgrPositionen.ActualWidth > 0) column.Width = dgrPositionen.ActualWidth * 0.15;
+                        break;
+                }
         }
     }
 }

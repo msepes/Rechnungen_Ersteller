@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using Ubiety.Dns.Core.Records;
+
+namespace Rechnungen
+{
+    public static class TextBoxTools
+    {
+        public static void MakeAcceptDigits(TextBox txt)
+        {
+
+            txt.PreviewTextInput += (s,e) => e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
+        }
+    }
+}
