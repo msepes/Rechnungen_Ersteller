@@ -95,20 +95,32 @@ namespace DATA
             return sum.Value;
         }
 
+        public double Steuer()
+        {
+            return this.Umsatzsteuer / 100 * Netto();
+        }
+
+        public double MitSteuer()
+        {
+            return Netto() + Steuer();
+        }
+
+        public double Rabatt()
+        {
+            if (!(this.Rabbat?.satz > 1))
+                return 0;
+
+            return this.Rabbat.satz / 100 * MitSteuer();
+        }
+
         public double MitRabatt()
         {
-            var nett = Netto();
-
-            if (!(this.Rabbat?.satz > 1))
-                return nett;
-
-            return nett - this.Rabbat.satz / 100 * nett;
+            return MitSteuer() - Rabatt();
         }
 
         public double Summe() 
         {
-            var nett = MitRabatt();
-            return nett + this.Umsatzsteuer / 100 * nett;
+            return MitRabatt();
         }
     }
 
@@ -136,20 +148,32 @@ namespace DATA
             return sum.Value;
         }
 
+        public double Steuer()
+        {
+            return this.Umsatzsteuer / 100 * Netto();
+        }
+
+        public double MitSteuer()
+        {
+            return Netto() + Steuer();
+        }
+
+        public double Rabatt()
+        {
+            if (!(this.Rabbat?.satz > 1))
+                return 0;
+
+            return this.Rabbat.satz / 100 * MitSteuer();
+        }
+
         public double MitRabatt()
         {
-            var nett = Netto();
-
-            if (!(this.Rabbat?.satz > 1))
-                return nett;
-
-            return nett - this.Rabbat.satz / 100 * nett  ;
+            return MitSteuer() - Rabatt();
         }
 
         public double Summe()
         {
-            var nett = MitRabatt();
-            return nett + this.Umsatzsteuer / 100 * nett;
+            return MitRabatt();
         }
 
     }

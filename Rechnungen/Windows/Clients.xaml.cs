@@ -51,7 +51,6 @@ namespace Rechnungen.Windows
             this.DeleteClient = DeleteClient;
             this.GetClients = GetClients;
             this.Save = Save;
-            fillList();
         }
 
         public void RegisterRechnung(Func<Kunde, Rechnung> NewRechnung,
@@ -82,6 +81,11 @@ namespace Rechnungen.Windows
             this.DeleteAngebot = DeleteAngebot;
             this.PrintOffer = PrintOffer;
             this.GetRabatte = GetRabatte;
+        }
+
+        public void Init() 
+        {
+            fillList();
         }
 
         private void fillList()
@@ -169,7 +173,7 @@ namespace Rechnungen.Windows
                 txtGesamt.Text = "0 €";
                 return;
             }
-            txtGesamt.Text = $"{selectedClient.Rechnungen.Select(r => r.Summe()).Sum()} €";
+            txtGesamt.Text = $"{GetRechnungen(selectedClient)?.Select(r => r.Summe()).Sum()} €";
 
         }
 

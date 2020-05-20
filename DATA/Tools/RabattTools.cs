@@ -11,18 +11,21 @@ namespace Rechnungen.Tools
     {
         private static List<Rabbat> Inserted = new List<Rabbat>();
 
-        private static IEnumerable<Rabbat> GetAll(DbSet<Rabbat> KundenSet)
+        private static IEnumerable<Rabbat> GetAll(DbSet<Rabbat> RabattSet)
         {
-            return KundenSet.ToList().Concat(Inserted);
+            return RabattSet.OrderBy(r => r.Nr).ToList().Concat(Inserted);
         }
 
         public static Rabbat NewRabatt(DbSet<Rabbat> RabattSet)
         {
             var Rabatt = new Rabbat();
-            Rabatt.Beschreibung = "unbekannt";
+            var maxNr = RabattSet.Max(r => r.Nr);
+            var maxID = RabattSet.Max(r => r.ID);
+
+            Rabatt.Beschreibung = $"unbekannt{++maxNr}";
             var Rabatte = GetRabatte(RabattSet);
-            Rabatt.ID = Rabatte.Count() > 0 ? Rabatte.Max(k => k.ID) + 1 : 1;
-            Rabatt.Nr = Rabatte.Count() > 0 ? Rabatte.Max(k => k.Nr) + 1 : 1;
+            Rabatt.ID = ++maxID;
+            Rabatt.Nr = maxNr;
             RabattSet.Add(Rabatt);
             Inserted.Add(Rabatt);
 
@@ -48,12 +51,12 @@ namespace Rechnungen.Tools
 
         public static Rabbat GetRabatt(DbSet<Rabbat> RabattSet, long ID)
         {
-            return GetRabatte(RabattSet).FirstOrDefault(k => k.ID == ID);
+            return GetRabatte(RabattSet).FirstOrDefault(r => r.ID == ID);
         }
 
-        public static IEnumerable<Rabbat> GetRabatte(DbSet<Rabbat> KundenSet)
+        public static IEnumerable<Rabbat> GetRabatte(DbSet<Rabbat> RabattSet)
         {
-            return GetAll(KundenSet);
+            return GetAll(RabattSet);
         }
 
         public static void AcceptChanges()

@@ -6,6 +6,7 @@ using Rechnungen.Forms;
 using Rechnungen.Tools;
 using Rechnungen.Windows;
 using System;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 using System.Windows;
@@ -30,7 +31,7 @@ namespace Rechnungen
             bool Exsits = BenutzerTools.Exsits(context.Benutzer);
             while (!Exsits) {
                 var nl = Environment.NewLine;
-                MessageBox.Show($"Ihre Firma-Daten sind noch nicht vollständig eingegeben.{nl}Bitte geben Sie die Daten vollständig ein, danach einfach auf Speichern drücken.", "Einge Firma", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Bitte geben Sie Ihre Firmadaten vollständig ein, danach einfach auf Speichern drücken.", "Firmadaten", MessageBoxButton.OK, MessageBoxImage.Information);
                 ShowOwnCompanyWindow();
                 Exsits = BenutzerTools.Exsits(context.Benutzer);
             }
@@ -41,11 +42,54 @@ namespace Rechnungen
             try
             {
                 InsertData();
-                LoadData();
+
+                //foreach (var k in context.Kunden)
+                //{
+                //    for (int i = 0; i < 2; i++)
+                //    {
+                //       // var Rechnungen = context.Rechnungen;
+                //        var Rechnung = new Rechnung();
+                //        Rechnung.Nr = k.Nr;//Rechnungen.Count() > 0 ? Rechnungen.Max(k => k.Nr) + 1 : 1;
+                //        Rechnung.Datum = DateTime.Now;
+                //        Rechnung.Umsatzsteuer = 19;
+                //        Rechnung.LeistungsDatum = DateTime.Now;
+                //        Rechnung.Positions = new ObservableCollection<Rechnungsposition>();
+                //        Rechnung.Kunde = k;
+                //        context.Rechnungen.Add(Rechnung);
+
+
+
+                //        var rp = new Rechnungsposition();
+                //        rp.Beschreibung = $"Finster {Rechnung.Nr} {i}";
+                //        rp.Menge = 10;
+                //        rp.Einzeln_Preis = 40;
+                //        Rechnung.Positions.Add(rp);
+
+                //        rp = new Rechnungsposition();
+                //        rp.Beschreibung = $"Normal {Rechnung.Nr} {i}";
+                //        rp.Menge = 10;
+                //        rp.Einzeln_Preis = 20;
+                //        Rechnung.Positions.Add(rp);
+                //        Rechnung.LeistungsDatum = DateTime.Now.AddDays(Rechnung.Nr * -1);
+                //        Rechnung.Datum = DateTime.Now.AddDays(Rechnung.Nr * -1);
+                //    }
+                //}
+
+                //context.SaveChanges();
+                //for (int i = 0; i < 100000; i++)
+                //{
+                //    var k = ClientsTools.NewKunde(context.Kunden,context.Adressen);
+                //    k.addresse.Ort = "Hurga";
+                //    k.addresse.PLZ = "Hurga";
+                //    k.addresse.Strasse= "Hurga";
+                //    k.addresse.HasuNr= "Hurga";
+                //}
+
+                //context.SaveChanges();
             }
             catch (Exception ex)
             {
-                ExceptionTools.HandleException(ex, this.GetType());
+                ExceptionTools.HandleException(new Exception($"Keine Verbindung zu ConnectionStringSetting:{ConfigurationManager.ConnectionStrings["DB"]?.ConnectionString}", ex), this.GetType());
                 Environment.Exit(1);
             }
         }
@@ -77,17 +121,6 @@ namespace Rechnungen
             }
 
             context.SaveChanges();
-        }
-
-        private void LoadData()
-        {
-            context.Rabbat.Load();
-            context.Kunden.Load();
-            context.Benutzer.Load();
-            context.Rechnungen.Load();
-            context.Angebote.Load();
-            context.Rechnungsposition.Load();
-            context.Angebotsposition.Load();
         }
 
         private void OwnCompany_Click(object sender, RoutedEventArgs e)
@@ -125,6 +158,7 @@ namespace Rechnungen
                                 () => context.Rabbat,
                                 (rechnung, path) => OfferTools.PrintOffer(rechnung, GetBenutzer(context.Benutzer, context.Adressen), path));
 
+            frm.Init();
             ShowWindow(frm);
         }
 
@@ -178,6 +212,11 @@ namespace Rechnungen
             {
                 ExceptionTools.HandleException(ex, window.GetType());
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            context.Dispose();
         }
     }
 }

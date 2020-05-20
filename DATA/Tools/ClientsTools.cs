@@ -13,16 +13,15 @@ namespace Rechnungen
     {
         private static List<Kunde> Inserted = new List<Kunde>();
 
-   
-
         public static Kunde NewKunde(DbSet<Kunde> KundenSet, DbSet<Adresse> AdresseSet)
         {
-            var Kunde = new Kunde();
-            Kunde.FirmaName = "unbekannt";
-            var kunden = GetKunden(KundenSet);
 
-            Kunde.ID = kunden.Count() > 0 ? kunden.Max(k => k.ID) + 1 : 1;
-            Kunde.Nr = kunden.Count() > 0 ? kunden.Max(k => k.Nr) + 1 : 1;
+            var maxNr = KundenSet.Max(r => r.Nr);
+            var kunden = GetKunden(KundenSet);
+            var Kunde = new Kunde();
+            Kunde.FirmaName = $"unbekannt{++maxNr}";
+            Kunde.ID = KundenSet.Max(r => r.ID)+1;
+            Kunde.Nr = maxNr;
             Kunde.addresse = new Adresse();
             Kunde.Rechnungen = new ObservableCollection<Rechnung>();
             Kunde.Angebote = new ObservableCollection<Angebot>();
@@ -50,9 +49,16 @@ namespace Rechnungen
             KundenSet.Remove(Client);
         }
 
-        private static IEnumerable<Kunde> GetAll(DbSet<Kunde> KundenSet) => KundenSet.Include(k => k.addresse).Include(k => k.Rechnungen).Include(k => k.Angebote).ToList().Concat(Inserted);
+        private static IEnumerable<Kunde> GetAll(DbSet<Kunde> KundenSet) => KundenSet.OrderBy(k => k.Nr).ToList().Concat(Inserted);
 
-        public static Kunde GetKunde(DbSet<Kunde> KundenSet, long ID) => GetKunden(KundenSet).FirstOrDefault(k => k.ID == ID);
+        public static Kunde GetKunde(DbSet<Kunde> KundenSet, long ID)
+        {
+            var o = Inserted.FirstOrDefault(k => k.ID == ID);
+            if (o != null)
+                return o;
+
+            return KundenSet.Where(k => k.ID == ID).Include(k => k.addresse).FirstOrDefault();
+        }
 
         public static IEnumerable<Kunde> GetKunden(DbSet<Kunde> KundenSet) => GetAll(KundenSet);
 

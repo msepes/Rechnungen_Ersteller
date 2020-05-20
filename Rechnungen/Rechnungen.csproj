@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <Authors>Chalibo</Authors>
     <Company>Sondos Soft</Company>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

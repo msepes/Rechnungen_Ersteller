@@ -23,7 +23,6 @@ namespace Rechnungen
         public static void BindControl(string Property, object Source, ComboBox ctrl)
         {
             BindControl(Property, Source, ctrl, ComboBox.SelectedValueProperty);
-            ctrl.SelectedItem = null;
         }
 
         public static void Clear( TextBox ctrl)
@@ -46,6 +45,7 @@ namespace Rechnungen
         public static void Clear(ComboBox ctrl)
         {
             Clear(ctrl, ComboBox.SelectedValueProperty);
+            ctrl.SelectedItem = null;
         }
         private static void BindControl(string Property, object Source,Control ctrl, DependencyProperty DependencyProperty)
         {

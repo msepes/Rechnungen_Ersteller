@@ -193,8 +193,23 @@ namespace Rechnungen.Windows
             var selectedBill = GetRechnung(ID.Value);
 
             bind(selectedBill);
-            txtGesamt.Text = $"{selectedBill.Summe()} €";
+
+            SetSummenAnzeige();
             txtClient.Text = selectedBill.Kunde?.ToString();
+        }
+
+        private void SetSummenAnzeige()
+        {
+            var ID = GetSelectedID();
+
+            if (!ID.HasValue)
+                return;
+            var selectedBill = GetRechnung(ID.Value);
+
+            txtGesamt.Text = $"{selectedBill.Summe().ToString("F3")} €";
+            txtNetto.Text = $"+{selectedBill.Netto().ToString("F3")} €";
+            txtUmsatzsteuer.Text = $"+{selectedBill.Steuer().ToString("F3")} €";
+            txtRabatt.Text = $"-{selectedBill.Rabatt().ToString("F3")} €";
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -262,6 +277,27 @@ namespace Rechnungen.Windows
         private void dgrPositionen_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             GridTools.SetColumnsSize(dgrPositionen);
+        }
+
+        private void cboRabatt_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetSummenAnzeige();
+        }
+
+     
+        private void dgrPositionen_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            var head = (string)e.Column.Header;
+
+            if (head != "Menge" && head != "Einzeln_Preis")
+                return;
+
+            SetSummenAnzeige();
+        }
+
+        private void txtUmsatz_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SetSummenAnzeige();
         }
     }
 }

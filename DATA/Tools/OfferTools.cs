@@ -20,10 +20,12 @@ namespace Angeboten
         public static Angebot NewAngebot(DbSet<Angebot> AngebotSet, Kunde client)
         {
             var Angebot = new Angebot();
-            var Angeboten = GetAngeboten(AngebotSet);
 
-            Angebot.ID = Angeboten.Count() > 0 ? Angeboten.Max(k => k.ID) + 1 : 1;
-            Angebot.Nr = Angeboten.Count() > 0 ? Angeboten.Max(k => k.Nr) + 1 : 1;
+            var maxNr = AngebotSet.Max(r => r.Nr);
+            var maxID = AngebotSet.Max(r => r.ID);
+
+            Angebot.ID = ++maxID;
+            Angebot.Nr = ++maxNr ;
             Angebot.Datum = DateTime.Now;
             Angebot.Umsatzsteuer = 19;
             Angebot.Positions = new ObservableCollection<Angebotsposition>();
@@ -51,14 +53,25 @@ namespace Angeboten
         public static IEnumerable<Angebot> GetAngeboten(DbSet<Angebot> AngebotSet) => 
                GetAll(AngebotSet);
 
-        public static Angebot GetAngebot(DbSet<Angebot> AngebotSet, long ID) => 
-               GetAngeboten(AngebotSet).FirstOrDefault(k => k.ID == ID);
+        public static Angebot GetAngebot(DbSet<Angebot> AngebotSet, long ID) =>
+               AngebotSet.Where(a => a.ID == ID)
+                         .Include(a => a.Rabbat)
+                         .Include(a => a.Positions)
+                         .Include(a => a.Kunde)
+                         .ToList()
+                         .Concat(Inserted.Where(a => a.ID == ID))
+                         .FirstOrDefault();
 
-        public static IEnumerable<Angebot> GetAngeboten(DbSet<Angebot> AngebotSet, Kunde client) => 
-               GetAll(AngebotSet).Where(r => r.Kunde.ID == client.ID);
+        public static IEnumerable<Angebot> GetAngeboten(DbSet<Angebot> AngebotSet, Kunde client) =>
+               AngebotSet.Where(r => r.Kunde.ID == client.ID)
+                         .Include(a => a.Rabbat)
+                         .Include(a => a.Positions)
+                         .OrderBy(a => a.Nr)
+                         .ToList()
+                         .Concat(Inserted.Where(a => a.Kunde.ID == client.ID));
 
         private static IEnumerable<Angebot> GetAll(DbSet<Angebot> AngebotSet) => 
-               AngebotSet.Include(k => k.Positions).Include(k => k.Rabbat).Include(k => k.Kunde).Include(k => k.Kunde.addresse).ToList().Concat(Inserted);
+               AngebotSet.ToList().Concat(Inserted);
         
         public static void PrintOffer(Angebot Angebot, Benutzer Benutzer, string path)
         {

@@ -19,16 +19,20 @@ namespace Rechnungen
 
         private static IEnumerable<Rechnung> GetAll(DbSet<Rechnung> RechnungSet)
         {
-            return RechnungSet.Include(k => k.Positions).Include(k => k.Rabbat).Include(k => k.Kunde).Include(k => k.Kunde.addresse).ToList().Concat(Inserted);
+            return RechnungSet.Include(k => k.Kunde)
+                              .OrderBy(r => r.Nr)
+                              .ToList()
+                              .Concat(Inserted);
         }
 
         public static Rechnung NewRechnung(DbSet<Rechnung> RechnungSet, Kunde client)
         {
             var Rechnung = new Rechnung();
-            var Rechnungen = GetRechnungen(RechnungSet);
+            var maxID = RechnungSet.Max(r => r.ID);
+            var maxNr = RechnungSet.Max(r => r.Nr);
 
-            Rechnung.ID = Rechnungen.Count() > 0 ? Rechnungen.Max(k => k.ID) + 1 : 1;
-            Rechnung.Nr = Rechnungen.Count() > 0 ? Rechnungen.Max(k => k.Nr) + 1 : 1;
+            Rechnung.ID = ++maxID;
+            Rechnung.Nr = ++maxNr;
             Rechnung.Datum = DateTime.Now;
             Rechnung.Umsatzsteuer = 19;
             Rechnung.LeistungsDatum = DateTime.Now;
@@ -54,7 +58,14 @@ namespace Rechnungen
 
         public static Rechnung GetRechnung(DbSet<Rechnung> RechnungSet, long ID)
         {
-            return GetRechnungen(RechnungSet).FirstOrDefault(k => k.ID == ID);
+
+            return RechnungSet.Where(r => r.ID == ID)
+                              .Include(r => r.Rabbat)
+                              .Include(r => r.Positions)
+                              .Include(r => r.Kunde)
+                              .ToList()
+                              .Concat(Inserted.Where(r => r.ID == ID))
+                              .FirstOrDefault();
         }
 
         public static IEnumerable<Rechnung> GetRechnungen(DbSet<Rechnung> RechnungSet)
@@ -64,7 +75,13 @@ namespace Rechnungen
 
         public static IEnumerable<Rechnung> GetRechnungen(DbSet<Rechnung> RechnungSet, Kunde client)
         {
-            return GetAll(RechnungSet).Where(r => r.Kunde.ID == client.ID);
+            return RechnungSet.Where(r => r.Kunde.ID == client.ID)
+                              .Include(r => r.Rabbat)
+                              .Include(r => r.Positions)
+                              .Include(r => r.Kunde)
+                              .OrderBy(r => r.Nr)
+                              .ToList()
+                              .Concat(Inserted.Where(r => r.Kunde.ID == client.ID));
         }
 
         public static void AcceptChanges()
