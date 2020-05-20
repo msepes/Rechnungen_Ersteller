@@ -19,8 +19,14 @@ namespace Rechnungen.Tools
         public static Rabbat NewRabatt(DbSet<Rabbat> RabattSet)
         {
             var Rabatt = new Rabbat();
-            var maxNr = RabattSet.Max(r => r.Nr);
-            var maxID = RabattSet.Max(r => r.ID);
+            var maxNr = RabattSet.Count() > 0 ? RabattSet.Max(r => r.Nr) : 0;
+            var maxID = RabattSet.Count() > 0 ? RabattSet.Max(r => r.ID) : 0;
+
+            var maxInsertedNr = Inserted.Count > 0 ? Inserted.Max(o => o.Nr) : 0;
+            var maxInsertedID = Inserted.Count > 0 ? Inserted.Max(o => o.ID) : 0;
+
+            maxNr = maxInsertedNr > maxNr ? maxInsertedNr : maxNr;
+            maxID = maxInsertedID > maxID ? maxInsertedID : maxID;
 
             Rabatt.Beschreibung = $"unbekannt{++maxNr}";
             var Rabatte = GetRabatte(RabattSet);

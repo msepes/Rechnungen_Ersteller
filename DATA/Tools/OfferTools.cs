@@ -21,14 +21,22 @@ namespace Angeboten
         {
             var Angebot = new Angebot();
 
-            var maxNr = AngebotSet.Max(r => r.Nr);
-            var maxID = AngebotSet.Max(r => r.ID);
+            var maxNr = AngebotSet.Count() > 0 ? AngebotSet.Max(r => r.Nr):0;
+            var maxID = AngebotSet.Count() > 0 ? AngebotSet.Max(r => r.ID):0;
+            var maxInsertedNr = Inserted.Count > 0 ? Inserted.Max(o => o.Nr) : 0;
+            var maxInsertedID = Inserted.Count > 0 ? Inserted.Max(o => o.ID) : 0;
+
+            maxNr = maxInsertedNr > maxNr ? maxInsertedNr : maxNr;
+            maxID = maxInsertedID > maxID ? maxInsertedID : maxID;
 
             Angebot.ID = ++maxID;
             Angebot.Nr = ++maxNr ;
             Angebot.Datum = DateTime.Now;
             Angebot.Umsatzsteuer = 19;
             Angebot.Positions = new ObservableCollection<Angebotsposition>();
+            var defa = new Angebotsposition();
+            defa.Beschreibung = "Reinigungsstunde";
+            Angebot.Positions.Add(defa);
             Angebot.Kunde = client;
             AngebotSet.Add(Angebot);
             Inserted.Add(Angebot);

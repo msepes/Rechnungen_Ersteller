@@ -258,7 +258,6 @@ namespace Rechnungen.Windows
 
         private void dgrPositionen_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-
         }
     }
 }

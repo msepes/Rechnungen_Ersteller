@@ -56,7 +56,7 @@ namespace Rechnungen.Windows
             this.Save = Save;
 
             FillRabatte();
-            fillList();
+            fillList(Rechnung => Rechnung.ToString());
         }
 
         public void Register(Func<long, Rechnung> GetRechnung,
@@ -72,18 +72,18 @@ namespace Rechnungen.Windows
             this.Save = Save;
 
             FillRabatte();
-            fillList();
+            fillList(Rechnung => $"{Rechnung.Kunde.FirmaName} - {Rechnung.Nr} - {Rechnung.Datum}");
 
             lstBox.ContextMenu.Items.Clear();
         }
 
-        private void fillList()
+        private void fillList(Func<Rechnung,string> GetDisplay)
         {
             Unbind();
             lstBox.Items.Clear();
             lstBox.SelectionMode = SelectionMode.Single;
             lstBox.DisplayMemberPath = "Bezeichnung";
-            var items = GetRechnungen().Select(Rechnung => new ListBoxItem(Rechnung.ToString(), Rechnung.ID));
+            var items = GetRechnungen().Select(Rechnung => new ListBoxItem(GetDisplay(Rechnung), Rechnung.ID));
             foreach (var item in items)
                 lstBox.Items.Add(item);
 

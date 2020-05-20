@@ -22,7 +22,7 @@ namespace Rechnungen
                 if (Head == "Beschreibung")
                     return;
 
-                e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
+                e.Handled = new Regex(@"[0-9] + (\.[0-9] [0-9]?)?").IsMatch(e.Text);
             };
         }
 

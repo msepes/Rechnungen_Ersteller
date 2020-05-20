@@ -25,7 +25,7 @@ namespace Rechnungen.Windows
         private Func<long, Rechnung> GetRechnung;
         private Func<Kunde, IEnumerable<Rechnung>> GetRechnungen;
         private Action<Rechnung> DeleteRechnung;
-        private Action<Rechnung,string> PrintBill;
+        private Action<Rechnung, string> PrintBill;
         private Func<IEnumerable<Rabbat>> GetRabatte;
 
         private Func<Kunde> NewClient;
@@ -83,7 +83,7 @@ namespace Rechnungen.Windows
             this.GetRabatte = GetRabatte;
         }
 
-        public void Init() 
+        public void Init()
         {
             fillList();
         }
@@ -122,6 +122,9 @@ namespace Rechnungen.Windows
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (!TrySave())
+                return;
+
             var offer = new Offer();
             var kunde = GetSelectedKunde();
             offer.Register(() => NewAngebot(kunde),
@@ -137,6 +140,10 @@ namespace Rechnungen.Windows
 
         private void btnRechnung_Click(object sender, RoutedEventArgs e)
         {
+
+            if (!TrySave())
+                return;
+
             var bill = new Bill();
             var kunde = GetSelectedKunde();
             bill.Register(() => NewRechnung(kunde),
@@ -150,6 +157,22 @@ namespace Rechnungen.Windows
             MainWindow.ShowWindow(bill);
             SetGesamt();
         }
+
+        private bool TrySave()
+        {
+            try
+            {
+                Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                ExceptionTools.HandleException(ex, this.GetType());
+                return false;
+            }
+        }
+
 
         private void lstBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -189,7 +212,7 @@ namespace Rechnungen.Windows
             {
                 ExceptionTools.HandleException(ex, this.GetType());
             }
-        
+
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
@@ -204,7 +227,7 @@ namespace Rechnungen.Windows
             {
                 ExceptionTools.HandleException(ex, this.GetType());
             }
-        
+
         }
 
         private long? GetSelectedID()
@@ -226,25 +249,10 @@ namespace Rechnungen.Windows
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Save();
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                ExceptionTools.HandleException(ex, this.GetType());
-            }
-        }
+            if (!TrySave())
+                return;
 
-        private void txtFirma_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateSelectedItem();
-        }
-
-        private void txtNummer_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateSelectedItem();
+            this.Close();
         }
 
         private void UpdateSelectedItem()
@@ -270,5 +278,17 @@ namespace Rechnungen.Windows
 
             item.IsEnabled = lstBox.SelectedItems?.Count > 0 && lstBox.SelectedItem != null;
         }
+
+        private void txtFirma_LostFocus(object sender, RoutedEventArgs e)
+        {
+            UpdateSelectedItem();
+        }
+
+        private void txtNummer_LostFocus(object sender, RoutedEventArgs e)
+        {
+            UpdateSelectedItem();
+        }
+
+      
     }
 }

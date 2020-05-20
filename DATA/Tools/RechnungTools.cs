@@ -28,8 +28,15 @@ namespace Rechnungen
         public static Rechnung NewRechnung(DbSet<Rechnung> RechnungSet, Kunde client)
         {
             var Rechnung = new Rechnung();
-            var maxID = RechnungSet.Max(r => r.ID);
-            var maxNr = RechnungSet.Max(r => r.Nr);
+
+            var maxID = RechnungSet.Count() > 0 ? RechnungSet.Max(r => r.ID):0;
+            var maxNr = RechnungSet.Count() > 0 ? RechnungSet.Max(r => r.Nr):0;
+
+            var maxInsertedNr = Inserted.Count > 0 ? Inserted.Max(o => o.Nr) : 0;
+            var maxInsertedID = Inserted.Count > 0 ? Inserted.Max(o => o.ID) : 0;
+
+            maxNr = maxInsertedNr > maxNr ? maxInsertedNr : maxNr;
+            maxID = maxInsertedID > maxID ? maxInsertedID : maxID;
 
             Rechnung.ID = ++maxID;
             Rechnung.Nr = ++maxNr;
@@ -37,6 +44,9 @@ namespace Rechnungen
             Rechnung.Umsatzsteuer = 19;
             Rechnung.LeistungsDatum = DateTime.Now;
             Rechnung.Positions = new ObservableCollection<Rechnungsposition>();
+            var defa = new Rechnungsposition();
+            defa.Beschreibung = "Reinigungsstunde";
+            Rechnung.Positions.Add(defa);
             Rechnung.Kunde = client;
             RechnungSet.Add(Rechnung);
             Inserted.Add(Rechnung);
@@ -286,6 +296,17 @@ namespace Rechnungen
                 Brutto.Add(new Chunk($"{Rechnung.Summe().ToString("F2")} ‎€"));
                 doc.Add(Brutto);
                 doc.Add(lBreak);
+
+                if (Rechnung.Umsatzsteuer < 1)
+                {
+                    Paragraph Umsatz = new Paragraph();
+                    Umsatz.Alignment = Element.ALIGN_LEFT;
+                    Umsatz.Add(new Chunk("Hinweis:"));
+                    Umsatz.Add(new Chunk("kein Ausweis der Umsatzsteuer §13b schuldet der Leistungsempfänger die Umsatzsteuer"));
+                    doc.Add(Umsatz);
+                    doc.Add(lBreak);
+                }
+
                 doc.Add(sep);
 
                 Paragraph Final = new Paragraph();

@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:Rechnungen.Windows"
         xmlns:UserControls="clr-namespace:Rechnungen.UserControls" x:Class="Rechnungen.Windows.Clients"
         mc:Ignorable="d"
-        Title="Kunden" Height="340" Width="498"  ResizeMode="CanResize" Icon="/logo.jpg">
+        Title="Kunden" Height="340" Width="636"  ResizeMode="CanResize" Icon="/logo.jpg">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="41*"/>
-            <ColumnDefinition Width="171*"/>
+            <ColumnDefinition Width="101*"/>
+            <ColumnDefinition Width="168*"/>
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0,17,0,10" Width="6"/>
         <ListBox x:Name="lstBox" SelectionChanged="lstBox_SelectionChanged" ContextMenuOpening="lstBox_ContextMenuOpening" >
@@ -23,15 +23,21 @@
         </ListBox>
         <Grid x:Name="panel1" Grid.Column="1"  Margin="11,0,0,10">
             <Label x:Name="lblNummer" Content="Nummer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,32,0,0" VerticalAlignment="Top" Width="74"/>
-            <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="79,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" TextChanged="txtNummer_TextChanged" InputScope="Number"/>
-            <local:Adresse x:Name="addAdress" HorizontalAlignment="Left" Height="77" VerticalAlignment="Top" Width="373" Margin="5,64,0,0"/>
+            <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="79,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" InputScope="Number" LostFocus="txtNummer_LostFocus"/>
+            <local:Adresse x:Name="addAdress" HorizontalAlignment="Center" Height="77" VerticalAlignment="Top" Width="373" Margin="0,126,0,0"/>
             <Button x:Name="btnOffers" Content="Angebote" HorizontalAlignment="Left" Margin="63,0,0,12" VerticalAlignment="Bottom" Width="96" Height="21" Click="Button_Click" IsEnabled="False"/>
             <Button x:Name="btnRechnung" Content="Rechnungen" HorizontalAlignment="Left" Margin="164,0,0,13" VerticalAlignment="Bottom" Width="96" Height="20" Click="btnRechnung_Click" IsEnabled="False"/>
             <Label x:Name="lblFirma" Content="Firma" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="74"/>
-            <TextBox x:Name="txtFirma" HorizontalAlignment="Left" Margin="79,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" TextChanged="txtFirma_TextChanged"/>
+            <TextBox x:Name="txtFirma" HorizontalAlignment="Left" Margin="79,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" LostFocus="txtFirma_LostFocus"/>
             <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Left" Margin="265,0,0,13" VerticalAlignment="Bottom" Width="96" Height="20" Click="btnSave_Click"/>
             <Label x:Name="lblGesamt" Content="Gesamt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="63,0,0,38" VerticalAlignment="Bottom" Width="74"/>
-            <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="137,0,0,42" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="224" TextChanged="txtFirma_TextChanged" IsEnabled="False"/>
+            <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="137,0,0,42" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="224" IsEnabled="False"/>
+            <Label x:Name="lblPartner" Content="Partner" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,55,0,0" VerticalAlignment="Top" Width="74"/>
+            <TextBox x:Name="txtPartner" HorizontalAlignment="Left" Margin="79,60,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" InputScope="Number" LostFocus="txtNummer_LostFocus"/>
+            <Label x:Name="lblEmail" Content="Email" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,78,0,0" VerticalAlignment="Top" Width="74"/>
+            <TextBox x:Name="txtEmail" HorizontalAlignment="Left" Margin="79,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" InputScope="Number" LostFocus="txtNummer_LostFocus"/>
+            <Label x:Name="lblTelephone" Content="Telephone" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,101,0,0" VerticalAlignment="Top" Width="74"/>
+            <TextBox x:Name="txtTelephone" HorizontalAlignment="Left" Margin="79,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" InputScope="Number" LostFocus="txtNummer_LostFocus"/>
         </Grid>
     </Grid>
 </Window>

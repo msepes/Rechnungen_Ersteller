@@ -16,11 +16,19 @@ namespace Rechnungen
         public static Kunde NewKunde(DbSet<Kunde> KundenSet, DbSet<Adresse> AdresseSet)
         {
 
-            var maxNr = KundenSet.Max(r => r.Nr);
+            var maxNr = KundenSet.Count() > 0 ? KundenSet.Max(r => r.Nr):0;
+            var maxID = KundenSet.Count() > 0 ? KundenSet.Max(r => r.ID):0;
+
+            var maxInsertedNr = Inserted.Count > 0 ?Inserted.Max(o => o.Nr):0;
+            var maxInsertedID = Inserted.Count > 0 ? Inserted.Max(o => o.ID):0;
+
+            maxNr = maxInsertedNr > maxNr ? maxInsertedNr : maxNr;
+            maxID = maxInsertedID > maxID ? maxInsertedID : maxID;
+
             var kunden = GetKunden(KundenSet);
             var Kunde = new Kunde();
             Kunde.FirmaName = $"unbekannt{++maxNr}";
-            Kunde.ID = KundenSet.Max(r => r.ID)+1;
+            Kunde.ID = ++maxID;
             Kunde.Nr = maxNr;
             Kunde.addresse = new Adresse();
             Kunde.Rechnungen = new ObservableCollection<Rechnung>();

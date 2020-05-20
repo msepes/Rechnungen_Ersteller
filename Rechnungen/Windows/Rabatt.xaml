@@ -8,8 +8,8 @@
         Title="Rabatt" Height="294" Width="800" Icon="/logo.jpg">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="31*"/>
-            <ColumnDefinition Width="129*"/>
+            <ColumnDefinition Width="243*"/>
+            <ColumnDefinition Width="557*"/>
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0,10,0,10" Width="6"/>
         <ListBox x:Name="lstBox" SelectionChanged="lstBox_SelectionChanged">

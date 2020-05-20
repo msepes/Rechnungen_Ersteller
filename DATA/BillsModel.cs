@@ -45,6 +45,9 @@ namespace DATA
         public long ID { get; set; }
         public string FirmaName { get; set; }
         public long Nr { get; set; }
+        public string Email { get; set; }
+        public string Telephone { get; set; }
+        public string Ansprechpartner { get; set; }
         public virtual Adresse addresse { get; set; }
         public ObservableCollection<Rechnung> Rechnungen { get; set; }
         public ObservableCollection<Angebot> Angebote { get; set; }

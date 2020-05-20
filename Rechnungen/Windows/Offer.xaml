@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:Rechnungen.Windows"
         xmlns:UserControls="clr-namespace:Rechnungen.UserControls" x:Class="Rechnungen.Windows.Offer"
         mc:Ignorable="d"
-        Title="Angebote" Height="408" Width="576" Icon="/logo.jpg">
+        Title="Angebote" Height="579" Width="917" Icon="/logo.jpg">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="31*"/>
-            <ColumnDefinition Width="129*"/>
+            <ColumnDefinition Width="223*"/>
+            <ColumnDefinition Width="597*"/>
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0,17,0,10" Width="6"/>
         <ListBox x:Name="lstBox" SelectionChanged="lstBox_SelectionChanged" ContextMenuOpening="lstBox_ContextMenuOpening">

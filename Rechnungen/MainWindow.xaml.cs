@@ -42,50 +42,6 @@ namespace Rechnungen
             try
             {
                 InsertData();
-
-                //foreach (var k in context.Kunden)
-                //{
-                //    for (int i = 0; i < 2; i++)
-                //    {
-                //       // var Rechnungen = context.Rechnungen;
-                //        var Rechnung = new Rechnung();
-                //        Rechnung.Nr = k.Nr;//Rechnungen.Count() > 0 ? Rechnungen.Max(k => k.Nr) + 1 : 1;
-                //        Rechnung.Datum = DateTime.Now;
-                //        Rechnung.Umsatzsteuer = 19;
-                //        Rechnung.LeistungsDatum = DateTime.Now;
-                //        Rechnung.Positions = new ObservableCollection<Rechnungsposition>();
-                //        Rechnung.Kunde = k;
-                //        context.Rechnungen.Add(Rechnung);
-
-
-
-                //        var rp = new Rechnungsposition();
-                //        rp.Beschreibung = $"Finster {Rechnung.Nr} {i}";
-                //        rp.Menge = 10;
-                //        rp.Einzeln_Preis = 40;
-                //        Rechnung.Positions.Add(rp);
-
-                //        rp = new Rechnungsposition();
-                //        rp.Beschreibung = $"Normal {Rechnung.Nr} {i}";
-                //        rp.Menge = 10;
-                //        rp.Einzeln_Preis = 20;
-                //        Rechnung.Positions.Add(rp);
-                //        Rechnung.LeistungsDatum = DateTime.Now.AddDays(Rechnung.Nr * -1);
-                //        Rechnung.Datum = DateTime.Now.AddDays(Rechnung.Nr * -1);
-                //    }
-                //}
-
-                //context.SaveChanges();
-                //for (int i = 0; i < 100000; i++)
-                //{
-                //    var k = ClientsTools.NewKunde(context.Kunden,context.Adressen);
-                //    k.addresse.Ort = "Hurga";
-                //    k.addresse.PLZ = "Hurga";
-                //    k.addresse.Strasse= "Hurga";
-                //    k.addresse.HasuNr= "Hurga";
-                //}
-
-                //context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -97,10 +53,10 @@ namespace Rechnungen
         private void InsertData()
         {
             context = new BillsContext(ConfigurationManager.ConnectionStrings["DB"].ConnectionString);
-        
-            //context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
 
+            context.Database.EnsureDeleted();
+
+            context.Database.EnsureCreated();
 
             if (context.Rabbat.FirstOrDefault(r => r.Beschreibung == "Kein Rabatt") == null)
             {
