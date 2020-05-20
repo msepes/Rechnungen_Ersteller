@@ -54,8 +54,6 @@ namespace Rechnungen
         {
             context = new BillsContext(ConfigurationManager.ConnectionStrings["DB"].ConnectionString);
 
-            context.Database.EnsureDeleted();
-
             context.Database.EnsureCreated();
 
             if (context.Rabbat.FirstOrDefault(r => r.Beschreibung == "Kein Rabatt") == null)
