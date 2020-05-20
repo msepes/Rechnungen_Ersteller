@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -22,7 +23,10 @@ namespace Rechnungen
                 if (Head == "Beschreibung")
                     return;
 
-                e.Handled = new Regex(@"[0-9] + (\.[0-9] [0-9]?)?").IsMatch(e.Text);
+                var text = (e.OriginalSource as TextBox)?.Text ?? string.Empty;
+                text += e.Text;
+
+                e.Handled = !(new Regex(@"^[0-9]+(\.)?([0-9]+)?$").IsMatch(text));  
             };
         }
 
