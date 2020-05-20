@@ -168,7 +168,7 @@ namespace Rechnungen.Windows
             }
             catch (Exception ex)
             {
-                Exception(ex, this.GetType());
+                ExceptionTools.HandleException(ex, this.GetType());
             }
 
 
@@ -206,10 +206,10 @@ namespace Rechnungen.Windows
                 return;
             var selectedBill = GetRechnung(ID.Value);
 
-            txtGesamt.Text = $"{selectedBill.Summe().ToString("F3")} €";
-            txtNetto.Text = $"+{selectedBill.Netto().ToString("F3")} €";
-            txtUmsatzsteuer.Text = $"+{selectedBill.Steuer().ToString("F3")} €";
-            txtRabatt.Text = $"-{selectedBill.Rabatt().ToString("F3")} €";
+            txtGesamt.Text = $"{selectedBill.Summe().ToString("F2")} €";
+            txtNetto.Text = $"+{selectedBill.Netto().ToString("F2")} €";
+            txtUmsatzsteuer.Text = $"+{selectedBill.Steuer().ToString("F2")} €";
+            txtRabatt.Text = $"-{selectedBill.Rabatt().ToString("F2")} €";
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)

@@ -97,12 +97,12 @@ namespace DATA
 
         public double Steuer()
         {
-            return this.Umsatzsteuer / 100 * Netto();
+            return this.Umsatzsteuer / 100 * MitRabatt();
         }
 
         public double MitSteuer()
         {
-            return Netto() + Steuer();
+            return MitRabatt() + Steuer();
         }
 
         public double Rabatt()
@@ -110,17 +110,17 @@ namespace DATA
             if (!(this.Rabbat?.satz > 1))
                 return 0;
 
-            return this.Rabbat.satz / 100 * MitSteuer();
+            return this.Rabbat.satz / 100 * Netto();
         }
 
         public double MitRabatt()
         {
-            return MitSteuer() - Rabatt();
+            return Netto() - Rabatt();
         }
 
         public double Summe() 
         {
-            return MitRabatt();
+            return MitSteuer();
         }
     }
 
@@ -150,12 +150,12 @@ namespace DATA
 
         public double Steuer()
         {
-            return this.Umsatzsteuer / 100 * Netto();
+            return this.Umsatzsteuer / 100 * MitRabatt();
         }
 
         public double MitSteuer()
         {
-            return Netto() + Steuer();
+            return MitRabatt() + Steuer();
         }
 
         public double Rabatt()
@@ -163,17 +163,17 @@ namespace DATA
             if (!(this.Rabbat?.satz > 1))
                 return 0;
 
-            return this.Rabbat.satz / 100 * MitSteuer();
+            return this.Rabbat.satz / 100 * Netto();
         }
 
         public double MitRabatt()
         {
-            return MitSteuer() - Rabatt();
+            return Netto() - Rabatt();
         }
 
         public double Summe()
         {
-            return MitRabatt();
+            return MitSteuer();
         }
 
     }

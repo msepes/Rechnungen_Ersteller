@@ -58,6 +58,7 @@ namespace Angeboten
                          .Include(a => a.Rabbat)
                          .Include(a => a.Positions)
                          .Include(a => a.Kunde)
+                         .Include(a => a.Kunde.addresse)
                          .ToList()
                          .Concat(Inserted.Where(a => a.ID == ID))
                          .FirstOrDefault();
@@ -231,20 +232,20 @@ namespace Angeboten
                 Netto.Alignment = Element.ALIGN_RIGHT;
                 Netto.Add(new Chunk("Gesamtsumme Netto"));
                 Netto.Add(new Chunk(spaces));
-                Netto.Add(new Chunk($"{Angebot.Netto()} ‎€"));
+                Netto.Add(new Chunk($"{Angebot.Netto().ToString("F2")} ‎€"));
 
                 if (Angebot.Rabbat?.satz > 0)
                 {
                     Netto.Add(lBreak);
                     Netto.Add(new Chunk($"{Angebot.Rabbat}"));
                     Netto.Add(new Chunk(spaces));
-                    Netto.Add(new Chunk($"- {Angebot.Netto() * (Angebot.Rabbat.satz / 100)} ‎€"));
+                    Netto.Add(new Chunk($"- {(Angebot.Netto() * (Angebot.Rabbat.satz / 100)).ToString("F2")} ‎€"));
                 }
 
                 Netto.Add(lBreak);
                 Netto.Add(new Chunk($"{Angebot.Umsatzsteuer}% Mehrwertsteuer"));
                 Netto.Add(new Chunk(spaces));
-                Netto.Add(new Chunk($"+ {Angebot.MitRabatt() * (Angebot.Umsatzsteuer / 100)} ‎€"));
+                Netto.Add(new Chunk($"+ {(Angebot.MitRabatt() * (Angebot.Umsatzsteuer / 100)).ToString("F2")} ‎€"));
 
                 doc.Add(Netto);
                 doc.Add(lBreak);
@@ -256,7 +257,7 @@ namespace Angeboten
                 Brutto.Font = new Font(baseFont, 10, 1, BaseColor.BLACK);
                 Brutto.Add(new Chunk("Endsumme"));
                 Brutto.Add(new Chunk(spaces));
-                Brutto.Add(new Chunk($"{Angebot.Summe()} ‎€"));
+                Brutto.Add(new Chunk($"{Angebot.Summe().ToString("F2")} ‎€"));
                 doc.Add(Brutto);
                 doc.Add(lBreak);
 

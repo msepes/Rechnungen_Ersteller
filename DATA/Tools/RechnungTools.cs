@@ -63,6 +63,7 @@ namespace Rechnungen
                               .Include(r => r.Rabbat)
                               .Include(r => r.Positions)
                               .Include(r => r.Kunde)
+                              .Include(r => r.Kunde.addresse)
                               .ToList()
                               .Concat(Inserted.Where(r => r.ID == ID))
                               .FirstOrDefault();
@@ -257,20 +258,20 @@ namespace Rechnungen
                 Netto.Alignment = Element.ALIGN_RIGHT;
                 Netto.Add(new Chunk("Gesamtsumme Netto"));
                 Netto.Add(new Chunk(spaces));
-                Netto.Add(new Chunk($"{Rechnung.Netto()} ‎€"));
+                Netto.Add(new Chunk($"{Rechnung.Netto().ToString("F2")} ‎€"));
 
                 if (Rechnung.Rabbat?.satz > 0)
                 {
                     Netto.Add(lBreak);
                     Netto.Add(new Chunk($"{Rechnung.Rabbat}"));
                     Netto.Add(new Chunk(spaces));
-                    Netto.Add(new Chunk($"- {Rechnung.Netto() * (Rechnung.Rabbat.satz / 100)} ‎€"));
+                    Netto.Add(new Chunk($"- {(Rechnung.Netto() * (Rechnung.Rabbat.satz / 100)).ToString("F2")} ‎€"));
                 }
 
                 Netto.Add(lBreak);
                 Netto.Add(new Chunk($"{Rechnung.Umsatzsteuer}% Mehrwertsteuer"));
                 Netto.Add(new Chunk(spaces));
-                Netto.Add(new Chunk($"+ {Rechnung.MitRabatt() * (Rechnung.Umsatzsteuer / 100)} ‎€"));
+                Netto.Add(new Chunk($"+ {(Rechnung.MitRabatt() * (Rechnung.Umsatzsteuer / 100)).ToString("F2")} ‎€"));
 
                 doc.Add(Netto);
                 doc.Add(lBreak);
@@ -282,7 +283,7 @@ namespace Rechnungen
                 Brutto.Font = new Font(baseFont, 10, 1, BaseColor.BLACK);
                 Brutto.Add(new Chunk("Endsumme"));
                 Brutto.Add(new Chunk(spaces));
-                Brutto.Add(new Chunk($"{Rechnung.Summe()} ‎€"));
+                Brutto.Add(new Chunk($"{Rechnung.Summe().ToString("F2")} ‎€"));
                 doc.Add(Brutto);
                 doc.Add(lBreak);
                 doc.Add(sep);
