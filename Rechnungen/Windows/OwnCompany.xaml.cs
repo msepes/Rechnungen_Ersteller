@@ -1,7 +1,6 @@
 ﻿using DATA;
 using System;
 using System.Windows;
-using static Rechnungen.logger;
 using static Rechnungen.Binder;
 
 

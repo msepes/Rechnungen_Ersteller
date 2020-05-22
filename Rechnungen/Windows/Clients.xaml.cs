@@ -18,21 +18,25 @@ namespace Rechnungen.Windows
         private Func<long, Angebot> GetAngebot;
         private Func<Kunde, IEnumerable<Angebot>> GetAngebote;
         private Action<Angebot> DeleteAngebot;
-        private Action<Angebot, string> PrintOffer;
+        private Func<Angebot, string> PrintOffer;
 
 
         private Func<Kunde, Rechnung> NewRechnung;
         private Func<long, Rechnung> GetRechnung;
         private Func<Kunde, IEnumerable<Rechnung>> GetRechnungen;
         private Action<Rechnung> DeleteRechnung;
-        private Action<Rechnung, string> PrintBill;
+        private Func<Rechnung, string>  PrintBill;
         private Func<IEnumerable<Rabbat>> GetRabatte;
+        private Func<EmailConf> GetConfRechnung;
+        private Func<EmailConf> GetConfAngebot;
 
         private Func<Kunde> NewClient;
         private Func<long, Kunde> GetClient;
         private Action<Kunde> DeleteClient;
         private Func<IEnumerable<Kunde>> GetClients;
         private Action Save;
+
+        private Benutzer User;
 
         public Clients()
         {
@@ -44,21 +48,24 @@ namespace Rechnungen.Windows
                              Func<long, Kunde> GetClient,
                              Func<IEnumerable<Kunde>> GetClients,
                              Action Save,
-                             Action<Kunde> DeleteClient)
+                             Action<Kunde> DeleteClient,
+                             Benutzer User)
         {
             this.NewClient = NewClient;
             this.GetClient = GetClient;
             this.DeleteClient = DeleteClient;
             this.GetClients = GetClients;
             this.Save = Save;
+            this.User = User;
         }
 
         public void RegisterRechnung(Func<Kunde, Rechnung> NewRechnung,
                                      Func<long, Rechnung> GetRechnung,
                                      Func<Kunde, IEnumerable<Rechnung>> GetRechnungen,
                                      Action<Rechnung> DeleteRechnung,
+                                     Func<EmailConf> GetConfRechnung,
                                      Func<IEnumerable<Rabbat>> GetRabatte,
-                                     Action<Rechnung, string> PrintBill)
+                                     Func<Rechnung, string> PrintBill)
         {
             this.NewRechnung = NewRechnung;
             this.GetRechnung = GetRechnung;
@@ -66,14 +73,16 @@ namespace Rechnungen.Windows
             this.DeleteRechnung = DeleteRechnung;
             this.GetRabatte = GetRabatte;
             this.PrintBill = PrintBill;
+            this.GetConfRechnung = GetConfRechnung;
         }
 
         public void RegisterAngebot(Func<Kunde, Angebot> NewAngebot,
                                     Func<long, Angebot> GetAngebot,
                                     Func<Kunde, IEnumerable<Angebot>> GetAngebote,
                                     Action<Angebot> DeleteAngebot,
+                                    Func<EmailConf> GetConfAngebot,
                                     Func<IEnumerable<Rabbat>> GetRabatte,
-                                    Action<Angebot, string> PrintOffer)
+                                    Func<Angebot, string> PrintOffer)
         {
             this.NewAngebot = NewAngebot;
             this.GetAngebot = GetAngebot;
@@ -81,6 +90,8 @@ namespace Rechnungen.Windows
             this.DeleteAngebot = DeleteAngebot;
             this.PrintOffer = PrintOffer;
             this.GetRabatte = GetRabatte;
+            this.GetConfAngebot = GetConfAngebot;
+
         }
 
         public void Init()
@@ -110,6 +121,10 @@ namespace Rechnungen.Windows
             Unbind();
             BindControl(nameof(kunde.FirmaName), kunde, txtFirma);
             BindControl(nameof(kunde.Nr), kunde, txtNummer);
+            BindControl(nameof(kunde.Email), kunde, txtEmail);
+            BindControl(nameof(kunde.Telephone), kunde, txtTelephone);
+            BindControl(nameof(kunde.Ansprechpartner), kunde, txtPartner);
+
             addAdress.Bind(kunde.addresse);
         }
 
@@ -117,6 +132,10 @@ namespace Rechnungen.Windows
         {
             Clear(txtFirma);
             Clear(txtNummer);
+            Clear(txtEmail);
+            Clear(txtTelephone);
+            Clear(txtPartner);
+
             addAdress.unBind();
         }
 
@@ -133,7 +152,9 @@ namespace Rechnungen.Windows
                            Save,
                            DeleteAngebot,
                            GetRabatte,
-                           PrintOffer
+                           PrintOffer,
+                           GetConfAngebot,
+                           User
                            );
             MainWindow.ShowWindow(offer);
         }
@@ -152,7 +173,9 @@ namespace Rechnungen.Windows
                             Save,
                             DeleteRechnung,
                             GetRabatte,
-                            PrintBill
+                            PrintBill,
+                            GetConfRechnung,
+                            User
                             );
             MainWindow.ShowWindow(bill);
             SetGesamt();

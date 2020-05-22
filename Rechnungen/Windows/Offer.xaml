@@ -37,6 +37,7 @@
             <Label x:Name="lblRabatt" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top" Width="56"/>
             <Label x:Name="lblClient" Content="Kunde" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Width="56"/>
             <TextBox x:Name="txtClient" HorizontalAlignment="Left" Margin="66,92,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="368" Height="26" InputScope="Number" IsEnabled="False"/>
+            <Button x:Name="btnEmail" Content="Email" HorizontalAlignment="Right" Margin="0,0,188,13" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnEmail_Click" IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>

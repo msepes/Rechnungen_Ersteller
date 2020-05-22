@@ -82,7 +82,7 @@ namespace Angeboten
         private static IEnumerable<Angebot> GetAll(DbSet<Angebot> AngebotSet) => 
                AngebotSet.ToList().Concat(Inserted);
         
-        public static void PrintOffer(Angebot Angebot, Benutzer Benutzer, string path)
+        public static string PrintOffer(Angebot Angebot, Benutzer Benutzer)
         {
             if (Angebot == null)
                 throw new ArgumentNullException($"{nameof(Angebot)} darf nicht null sein!");
@@ -96,7 +96,12 @@ namespace Angeboten
             if (Angebot.Positions.Count < 1)
                 throw new ArgumentException($"{ nameof(Angebot.Positions) } hat keine Elemente!");
 
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+            if (!Directory.Exists(@".\Rechnungen"))
+                Directory.CreateDirectory(@".\Rechnungen");
+
+            var Pfad = Path.GetFullPath(@$".\Angebote\Angebot_{Angebot.Nr}_{Angebot.Kunde.FirmaName}_{Angebot.Datum.ToShortDateString()}.pdf");
+
+            FileStream fs = new FileStream(Pfad, FileMode.Create, FileAccess.Write, FileShare.None);
             Document doc = new Document(PageSize.A4);
             PdfWriter prw = PdfWriter.GetInstance(doc, fs);
 
@@ -283,6 +288,8 @@ namespace Angeboten
                 Final.Add(lBreak);
                 Final.Add(new Chunk("Besuchen Sie uns auf www.max--clean.de"));
                 doc.Add(Final);
+
+                return Pfad;
             }
             finally
             {

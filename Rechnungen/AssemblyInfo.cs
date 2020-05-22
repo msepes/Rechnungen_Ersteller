@@ -9,3 +9,4 @@ using System.Windows;
                                               // app, or any theme specific resource dictionaries)
 )]
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
+

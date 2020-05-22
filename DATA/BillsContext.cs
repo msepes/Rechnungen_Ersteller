@@ -24,6 +24,7 @@ namespace DATA
         public DbSet<Rechnungsposition> Rechnungsposition { get; set; }
         public DbSet<Angebot> Angebote { get; set; }
         public DbSet<Angebotsposition> Angebotsposition { get; set; }
+        public DbSet<EmailConf> EmailConf { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -33,6 +34,17 @@ namespace DATA
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<EmailConf>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+                entity.Property(e => e.EmailServer).IsRequired();
+                entity.Property(e => e.EmailBetriff).IsRequired();
+                entity.Property(e => e.EmailInhalt).IsRequired();
+                entity.Property(e => e.UserName).IsRequired();
+                entity.Property(e => e.password).IsRequired();
+                entity.Property(e => e.Port).IsRequired();
+            });
 
             modelBuilder.Entity<Adresse>(entity =>
             {

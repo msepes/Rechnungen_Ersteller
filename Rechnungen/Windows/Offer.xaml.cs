@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using iTextSharp.text.html.simpleparser;
 using Microsoft.Win32;
 using System.Diagnostics;
+using Rechnungen.Dialogs;
 
 namespace Rechnungen.Windows
 {
@@ -26,7 +27,10 @@ namespace Rechnungen.Windows
         private Func<IEnumerable<Angebot>> GetAngeboten;
         private Func<IEnumerable<Rabbat>> GetRabatte;
         private Action Save;
-        private Action<Angebot, string> Print;
+        private Func<Angebot, string> Print;
+        private Func<EmailConf> GetConf;
+        private Benutzer User;
+
         public Offer()
         {
             InitializeComponent();
@@ -41,7 +45,9 @@ namespace Rechnungen.Windows
                              Action Save,
                              Action<Angebot> DeleteAngebot,
                              Func<IEnumerable<Rabbat>> GetRabatte,
-                             Action<Angebot, string> Print)
+                             Func<Angebot, string> Print,
+                             Func<EmailConf> GetConf,
+                             Benutzer User)
         {
 
             this.NewAngebot = NewAngebot;
@@ -51,6 +57,8 @@ namespace Rechnungen.Windows
             this.GetRabatte = GetRabatte;
             this.Print = Print;
             this.Save = Save;
+            this.GetConf = GetConf;
+            this.User = User;
 
             FillRabatte();
             fillList();
@@ -60,7 +68,9 @@ namespace Rechnungen.Windows
                              Func<IEnumerable<Angebot>> GetAngeboten,
                              Action Save,
                              Func<IEnumerable<Rabbat>> GetRabatte,
-                             Action<Angebot, string> Print)
+                             Func<Angebot, string> Print,
+                             Func<EmailConf> GetConf,
+                             Benutzer User)
         {
 
             this.GetAngebot = GetAngebot;
@@ -68,6 +78,8 @@ namespace Rechnungen.Windows
             this.GetRabatte = GetRabatte;
             this.Print = Print;
             this.Save = Save;
+            this.GetConf = GetConf;
+            this.User = User;
 
             FillRabatte();
             fillList();
@@ -149,15 +161,9 @@ namespace Rechnungen.Windows
 
                 Save();
 
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.FileName = @$"Angebot_{Angebot.Kunde.FirmaName}_{Angebot.Datum.ToShortDateString()}_{Angebot.Nr}.pdf";
+                var path = Print(Angebot);
 
-                if (saveFileDialog.ShowDialog() != true)
-                    return;
-
-                Print(Angebot, saveFileDialog.FileName);
-
-                var startInfo = new ProcessStartInfo(saveFileDialog.FileName);
+                var startInfo = new ProcessStartInfo(path);
                 startInfo.UseShellExecute = true;
                 Process.Start(startInfo);
             }
@@ -179,6 +185,7 @@ namespace Rechnungen.Windows
 
             var ID = GetSelectedID();
             btnDrucken.IsEnabled = ID.HasValue;
+            btnEmail.IsEnabled = ID.HasValue;
 
             if (!ID.HasValue)
                 return;
@@ -258,6 +265,27 @@ namespace Rechnungen.Windows
 
         private void dgrPositionen_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
+        }
+
+        private void btnEmail_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(User.Email))
+            {
+                MessageBox.Show("Die Email-Adresse in 'Einge Firma' darf nicht leer sein!", "Email-Senden", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var angebot = GetSelectedAngebot();
+
+            if (string.IsNullOrWhiteSpace(angebot.Kunde.Email))
+            {
+                MessageBox.Show($"Die Kunde '{angebot.Kunde}' hat keine Email-Adresse!", "Email-Senden", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var frm = new EmailServerDialog();
+            frm.Register(GetConf, User, GetSelectedAngebot(), Save);
+            MainWindow.ShowWindow(frm);
         }
     }
 }

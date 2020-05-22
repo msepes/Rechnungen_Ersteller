@@ -1,8 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Rechnungen;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace DATA
@@ -89,7 +93,7 @@ namespace DATA
             return $"{Nr} - {Datum.ToShortDateString()}";
         }
 
-        public double Netto() 
+        public double Netto()
         {
             var sum = this.Positions?.Select(p => p.Einzeln_Preis * p.Menge).Sum();
             if (!sum.HasValue)
@@ -121,7 +125,7 @@ namespace DATA
             return Netto() - Rabatt();
         }
 
-        public double Summe() 
+        public double Summe()
         {
             return MitSteuer();
         }
@@ -196,4 +200,52 @@ namespace DATA
 
     }
 
+    public enum ConfTyp
+    {
+        Rechnung = 0,
+        Angebot = 1
+    }
+    public class EmailConf 
+    {
+
+        private string _strPassword;
+
+        public int ID { get; set; }
+        public ConfTyp typ { get; set; }
+        public string EmailServer { get; set; }
+        public string UserName { get; set; }
+        public int Port { get; set; } = 25;
+        public string EmailInhalt{ get; set; }
+        public string EmailBetriff { get; set; }
+
+        public string password
+        {
+            get
+            {
+                return EncryptionHelper.Decrypt(_strPassword);
+            }
+            set
+            {
+                _strPassword = EncryptionHelper.Encrypt(value);
+            }
+        }
+
+        public SecureString GetPassword() 
+        {
+            var ss = new SecureString();
+            foreach (var c in password)
+                ss.AppendChar(c);
+
+            return ss;
+        }
+
+        public bool IsVaild()
+        {
+            return !((new string[] { EmailServer, UserName, password }).All(string.IsNullOrEmpty));
+        }
+
+
+    }
 }
+
+

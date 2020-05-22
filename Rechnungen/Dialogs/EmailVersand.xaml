@@ -1,0 +1,19 @@
+﻿<Window x:Class="Rechnungen.Dialogs.EmailVersand"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Rechnungen.Dialogs"
+        mc:Ignorable="d"
+        Title="EmailVersand" Height="588" Width="819">
+    <Grid>
+        <TextBox x:Name="txtPreview" AcceptsReturn="True" Margin="0,91,10,45"/>
+        <Button x:Name="btnSend" Content="Senden" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="57" Click="btnSend_Click"/>
+        <Label x:Name="lblBetriff" Content="Betriff" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,33,0,0" VerticalAlignment="Top" Width="67"/>
+        <TextBox x:Name="txtBetriff" HorizontalAlignment="Left" Margin="82,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="708"/>
+        <Label x:Name="lblInhalt" Content="Inhalt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,60,0,0" VerticalAlignment="Top" Width="67"/>
+        <Label x:Name="lblReceiver" Content="Empfänger" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,10,0,0" VerticalAlignment="Top" Width="67"/>
+        <TextBox x:Name="txtReceiver" HorizontalAlignment="Left" Margin="83,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="404" IsEnabled="False"/>
+
+    </Grid>
+</Window>

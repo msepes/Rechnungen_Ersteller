@@ -41,12 +41,13 @@
             <Label x:Name="lblRabatt" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="22,74,0,0" VerticalAlignment="Top" Width="56"/>
             <Label x:Name="lblClient" Content="Kunde" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="11,105,0,0" VerticalAlignment="Top" Width="68"/>
             <TextBox x:Name="txtClient" HorizontalAlignment="Left" Margin="79,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="511" Height="26" InputScope="Number" AutomationProperties.HelpText="Rechnungsnummer" IsEnabled="False"/>
-            <Label x:Name="lblRabatt1" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,75" VerticalAlignment="Bottom" Width="61"/>
-            <TextBox x:Name="txtRabatt" HorizontalAlignment="Left" Margin="79,0,0,79" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" Foreground="Red" FontSize="16" FontWeight="Bold"/>
-            <Label x:Name="lblUmsatzsteuer" Content="Steuer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,52" VerticalAlignment="Bottom" Width="62"/>
-            <TextBox x:Name="txtUmsatzsteuer" HorizontalAlignment="Left" Margin="79,0,0,56" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" Foreground="Lime" FontSize="16" FontWeight="Bold"/>
+            <Label x:Name="lblRabatt1" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,73" VerticalAlignment="Bottom" Width="61"/>
+            <TextBox x:Name="txtRabatt" HorizontalAlignment="Left" Margin="79,0,0,77" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" Foreground="Red" FontSize="16" FontWeight="Bold"/>
+            <Label x:Name="lblUmsatzsteuer" Content="Steuer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,48" VerticalAlignment="Bottom" Width="62"/>
+            <TextBox x:Name="txtUmsatzsteuer" HorizontalAlignment="Left" Margin="79,0,0,52" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" Foreground="Lime" FontSize="16" FontWeight="Bold"/>
             <Label x:Name="lblNetto" Content="Netto" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,98" VerticalAlignment="Bottom" Width="61"/>
             <TextBox x:Name="txtNetto" HorizontalAlignment="Left" Margin="79,0,0,102" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" Foreground="Lime" FontSize="16" FontWeight="Bold"/>
+            <Button x:Name="btnMail" Content="Email" HorizontalAlignment="Right" Margin="0,0,190,14" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnMail_Click" IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>

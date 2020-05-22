@@ -100,7 +100,7 @@ namespace Rechnungen
             Inserted.Clear();
         }
 
-        public static void PrintBill(Rechnung Rechnung, Benutzer Benutzer, string path)
+        public static string PrintBill(Rechnung Rechnung, Benutzer Benutzer)
         {
             if (Rechnung == null)
                 throw new ArgumentNullException($"{nameof(Rechnung)} darf nicht null sein!");
@@ -114,9 +114,15 @@ namespace Rechnungen
             if (Rechnung.Positions.Count < 1)
                 throw new ArgumentException($"{ nameof(Rechnung.Positions) } hat keine Elemente!");
 
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+            if(!Directory.Exists(@".\Rechnungen"))
+            Directory.CreateDirectory(@".\Rechnungen");
+
+            var Pfad = Path.GetFullPath(@$".\Rechnungen\Rechnung_{Rechnung.Kunde.FirmaName}_{Rechnung.Nr}_{Rechnung.Datum.ToShortDateString()}.pdf");
+
+            FileStream fs = new FileStream(Pfad, FileMode.Create, FileAccess.Write, FileShare.None);
             Document doc = new Document(PageSize.A4);
             PdfWriter prw = PdfWriter.GetInstance(doc, fs);
+
 
             try
             {
@@ -321,6 +327,7 @@ namespace Rechnungen
                 Final.Add(lBreak);
                 Final.Add(new Chunk("Besuchen Sie uns auf www.max--clean.de"));
                 doc.Add(Final);
+                return Pfad;
             }
             finally
             {

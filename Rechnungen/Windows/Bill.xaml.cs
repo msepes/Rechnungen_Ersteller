@@ -14,6 +14,8 @@ using iTextSharp.text.html.simpleparser;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Rechnungen.Dialogs;
+using Renci.SshNet.Common;
 
 namespace Rechnungen.Windows
 {
@@ -27,8 +29,11 @@ namespace Rechnungen.Windows
         private Action<Rechnung> DeleteRechnung;
         private Func<IEnumerable<Rechnung>> GetRechnungen;
         private Func<IEnumerable<Rabbat>> GetRabatte;
-        private Action<Rechnung, string> Print;
+        private Func<Rechnung, string> Print;
+        private Func<EmailConf> GetConf;
         private Action Save;
+
+        private Benutzer User;
 
         public Bill()
         {
@@ -44,7 +49,9 @@ namespace Rechnungen.Windows
                              Action Save,
                              Action<Rechnung> DeleteRechnung,
                              Func<IEnumerable<Rabbat>> GetRabatte,
-                             Action<Rechnung, string> Print)
+                             Func<Rechnung, string> Print,
+                             Func<EmailConf> GetConf,
+                             Benutzer User)
         {
 
             this.NewRechnung = NewRechnung;
@@ -54,6 +61,9 @@ namespace Rechnungen.Windows
             this.GetRabatte = GetRabatte;
             this.Print = Print;
             this.Save = Save;
+            this.User = User;
+            this.GetConf = GetConf;
+
 
             FillRabatte();
             fillList(Rechnung => Rechnung.ToString());
@@ -63,21 +73,24 @@ namespace Rechnungen.Windows
                              Func<IEnumerable<Rechnung>> GetRechnungen,
                              Action Save,
                              Func<IEnumerable<Rabbat>> GetRabatte,
-                             Action<Rechnung, string> Print)
+                             Func<Rechnung, string> Print,
+                             Func<EmailConf> GetConf,
+                             Benutzer User)
         {
             this.GetRechnung = GetRechnung;
             this.GetRechnungen = GetRechnungen;
             this.GetRabatte = GetRabatte;
             this.Print = Print;
             this.Save = Save;
-
+            this.User = User;
+            this.GetConf = GetConf;
             FillRabatte();
-            fillList(Rechnung => $"{Rechnung.Kunde.FirmaName} - {Rechnung.Nr} - {Rechnung.Datum}");
+            fillList(Rechnung => $"{Rechnung.Nr} - {Rechnung.Kunde.FirmaName} - {Rechnung.Datum.ToShortDateString()}");
 
             lstBox.ContextMenu.Items.Clear();
         }
 
-        private void fillList(Func<Rechnung,string> GetDisplay)
+        private void fillList(Func<Rechnung, string> GetDisplay)
         {
             Unbind();
             lstBox.Items.Clear();
@@ -153,25 +166,16 @@ namespace Rechnungen.Windows
                     return;
 
                 Save();
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.FileName = @$"Rechnung_{Rechnung.Kunde.FirmaName}_{Rechnung.Datum.ToShortDateString()}_{Rechnung.Nr}.pdf";
 
-                if (saveFileDialog.ShowDialog() != true)
-                    return;
-
-                Print(Rechnung, saveFileDialog.FileName);
-
-                var startInfo = new ProcessStartInfo(saveFileDialog.FileName);
+                var path = Print(Rechnung);
+                var startInfo = new ProcessStartInfo(path);
                 startInfo.UseShellExecute = true;
                 Process.Start(startInfo);
-
             }
             catch (Exception ex)
             {
                 ExceptionTools.HandleException(ex, this.GetType());
             }
-
-
         }
 
         private long? GetSelectedID()
@@ -187,6 +191,7 @@ namespace Rechnungen.Windows
             var ID = GetSelectedID();
 
             btnDrucken.IsEnabled = ID.HasValue;
+            btnMail.IsEnabled = ID.HasValue;
 
             if (!ID.HasValue)
                 return;
@@ -284,7 +289,7 @@ namespace Rechnungen.Windows
             SetSummenAnzeige();
         }
 
-     
+
         private void dgrPositionen_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             var head = (string)e.Column.Header;
@@ -298,6 +303,29 @@ namespace Rechnungen.Windows
         private void txtUmsatz_LostFocus(object sender, RoutedEventArgs e)
         {
             SetSummenAnzeige();
+        }
+
+        private void btnMail_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (string.IsNullOrWhiteSpace(User.Email))
+            {
+                MessageBox.Show("Die Email-Adresse in 'Einge Firma' darf nicht leer sein!", "Email-Senden", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var rechnung = GetSelectedRechnung();
+
+            if (string.IsNullOrWhiteSpace(rechnung.Kunde.Email))
+            {
+                MessageBox.Show($"Die Kunde '{rechnung.Kunde}' hat keine Email-Adresse!", "Email-Senden", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var frm = new EmailServerDialog();
+            frm.Register(GetConf, User, rechnung, Save);
+            MainWindow.ShowWindow(frm);
+
         }
     }
 }

@@ -15,6 +15,23 @@ namespace Rechnungen
             BindControl(Property, Source, ctrl, TextBox.TextProperty);
         }
 
+        public static void BindControl(string Property, object Source, PasswordBox ctrl)
+        {
+            var metaprop = new PropertyMetadata(string.Empty, new PropertyChangedCallback(ChangePassword));
+            var dp = DependencyProperty.Register(Property ,typeof(string), ctrl.GetType(), metaprop);
+
+            BindControl(Property, Source, ctrl, dp);
+        }
+
+        private static void ChangePassword(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var passwordbox = d as PasswordBox;
+            if (passwordbox == null)
+                return;
+
+            passwordbox.Password = (e.NewValue as string);
+        }
+
         public static void BindControl(string Property, object Source, DatePicker ctrl)
         {
             BindControl(Property, Source, ctrl, DatePicker.SelectedDateProperty);

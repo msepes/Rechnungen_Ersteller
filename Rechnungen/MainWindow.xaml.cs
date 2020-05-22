@@ -2,6 +2,7 @@
 using DATA;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Rechnungen.Dialogs;
 using Rechnungen.Forms;
 using Rechnungen.Tools;
 using Rechnungen.Windows;
@@ -26,12 +27,25 @@ namespace Rechnungen
         public MainWindow()
         {
             InitializeComponent();
+
+            var conn = ConfigurationManager.ConnectionStrings["DB"]?.ConnectionString;
+            if(string.IsNullOrWhiteSpace(conn))
+            {
+                MessageBox.Show($"Bitte geben Sie Ihre Verbindungsstring (ConnectionString) in der Config-Datei vollständig ein.", "Verbindung", MessageBoxButton.OK, MessageBoxImage.Information);
+                Environment.Exit(1);
+            }
+
             Init();
 
             bool Exsits = BenutzerTools.Exsits(context.Benutzer);
             while (!Exsits) {
-                var nl = Environment.NewLine;
-                MessageBox.Show($"Bitte geben Sie Ihre Firmadaten vollständig ein, danach einfach auf Speichern drücken.", "Firmadaten", MessageBoxButton.OK, MessageBoxImage.Information);
+                var msgResult = MessageBox.Show($"Bitte geben Sie Ihre Firmadaten vollständig ein, danach einfach auf Speichern drücken.", "Firmadaten", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                if (msgResult == MessageBoxResult.Cancel)
+                { 
+                    Environment.Exit(1);
+                    return;
+                }
+
                 ShowOwnCompanyWindow();
                 Exsits = BenutzerTools.Exsits(context.Benutzer);
             }
@@ -96,21 +110,26 @@ namespace Rechnungen
                          (ID) => ClientsTools.GetKunde(context.Kunden, ID),
                          () => ClientsTools.GetKunden(context.Kunden),
                          () => context.SaveChanges(),
-                         (k) => ClientsTools.DeleteKunde(context.Kunden, k));
+                         (k) => ClientsTools.DeleteKunde(context.Kunden, k),
+                      
+                         BenutzerTools.GetBenutzer(context.Benutzer,context.Adressen));
 
             frm.RegisterRechnung((k) => RechnungTools.NewRechnung(context.Rechnungen, k),
                                  (ID) => RechnungTools.GetRechnung(context.Rechnungen, ID),
                                  (k) => RechnungTools.GetRechnungen(context.Rechnungen, k),
                                  (r) => RechnungTools.DeleteRechnung(context.Rechnungen, context.Rechnungsposition, r),
+                                 () => ConfigTools.GetConfig(context.EmailConf, ConfTyp.Rechnung),
                                  () => context.Rabbat,
-                                 (rechnung,path) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen), path));
+                                 (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen))
+                                  );
 
             frm.RegisterAngebot((k) => OfferTools.NewAngebot(context.Angebote, k),
                                 (ID) => OfferTools.GetAngebot(context.Angebote, ID),
                                 (k) => OfferTools.GetAngeboten(context.Angebote, k),
                                 (r) => OfferTools.DeleteAngebot(context.Angebote, context.Angebotsposition, r),
+                                 () => ConfigTools.GetConfig(context.EmailConf, ConfTyp.Angebot),
                                 () => context.Rabbat,
-                                (rechnung, path) => OfferTools.PrintOffer(rechnung, GetBenutzer(context.Benutzer, context.Adressen), path));
+                                (rechnung) => OfferTools.PrintOffer(rechnung, GetBenutzer(context.Benutzer, context.Adressen)));
 
             frm.Init();
             ShowWindow(frm);
@@ -120,10 +139,13 @@ namespace Rechnungen
         {
             var frm = new Bill();
             frm.Register((ID) => RechnungTools.GetRechnung(context.Rechnungen, ID),
-                                 () => RechnungTools.GetRechnungen(context.Rechnungen),
-                                 () => context.SaveChanges(),
-                                 () => context.Rabbat,
-                                 (rechnung, path) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen), path));
+                         () => RechnungTools.GetRechnungen(context.Rechnungen),
+                         () => context.SaveChanges(),
+                         () => context.Rabbat,
+                         (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen)),
+                         () => ConfigTools.GetConfig(context.EmailConf,ConfTyp.Rechnung),
+                         BenutzerTools.GetBenutzer(context.Benutzer, context.Adressen));
+
             ShowWindow(frm);
         }
 
@@ -131,10 +153,12 @@ namespace Rechnungen
         {
             var frm = new Offer();
             frm.Register((ID) => OfferTools.GetAngebot(context.Angebote, ID),
-                                () => OfferTools.GetAngeboten(context.Angebote),
-                                () => context.SaveChanges(),
-                                () => context.Rabbat,
-                                (rechnung, path) => OfferTools.PrintOffer(rechnung, GetBenutzer(context.Benutzer, context.Adressen), path));
+                         () => OfferTools.GetAngeboten(context.Angebote),
+                         () => context.SaveChanges(),
+                         () => context.Rabbat,
+                         (rechnung) => OfferTools.PrintOffer(rechnung, GetBenutzer(context.Benutzer, context.Adressen)),
+                         () => ConfigTools.GetConfig(context.EmailConf, ConfTyp.Angebot),
+                         BenutzerTools.GetBenutzer(context.Benutzer, context.Adressen));
             ShowWindow(frm);
         }
 

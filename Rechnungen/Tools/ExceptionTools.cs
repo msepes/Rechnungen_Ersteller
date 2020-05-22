@@ -12,7 +12,7 @@ namespace Rechnungen
             logger.Exception(ex, SourceType);
             var nl = Environment.NewLine;
             var msg = $"Die Operation kann nicht durchgeführt werden, folgende Fehler wurde festgestellt:{nl + nl}{ex.Message}{nl}{ex.InnerException?.Message}";
-            MessageBox.Show( msg, "Formular Öffnen", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show( msg, "System Meldung", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
