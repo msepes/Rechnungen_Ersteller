@@ -18,11 +18,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="logo.jpg" />
+    <Resource Include="logo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FirmLogo.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="log4net.config">

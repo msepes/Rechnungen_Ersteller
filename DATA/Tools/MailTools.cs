@@ -171,6 +171,9 @@ namespace DATA.Tools
                 case nameof(user.Telefone):
                     return user.Telefone;
 
+                case nameof(user.Web):
+                    return user.Web;
+
                 default:
                     return PropertyName;
             }
@@ -178,8 +181,16 @@ namespace DATA.Tools
 
         public static string GetBetriff(string head, Benutzer User, Rechnung Rechnung = null, Angebot angebot = null)
         {
-            return TemplateParser.Parse(head)
-                                 .Aggregate(string.Empty, (acc, t) => acc + GetStringFromToken(t, User, Rechnung, angebot));
+            try
+            {
+                return TemplateParser.Parse(head)
+                                     .Aggregate(string.Empty, (acc, t) => acc + GetStringFromToken(t, User, Rechnung, angebot));
+            }
+            catch (TemplateParser.ParseError ex)
+            {
+                throw new Exception(ex.Data0);
+            }
+
         }
 
         public static string GetBetriff(EmailConf conf, Benutzer User, Rechnung Rechnung = null, Angebot angebot = null)
@@ -190,8 +201,15 @@ namespace DATA.Tools
 
         public static string GetPreview(string body, Benutzer User, Rechnung Rechnung = null, Angebot angebot = null)
         {
-            return TemplateParser.Parse(body)
+            try
+            {
+                return TemplateParser.Parse(body)
                                  .Aggregate(string.Empty, (acc, t) => acc + GetStringFromToken(t, User, Rechnung, angebot));
+            }
+            catch (TemplateParser.ParseError ex)
+            {
+                throw new Exception(ex.Data0);
+            }
         }
 
         public static string GetPreview(EmailConf conf, Benutzer User, Rechnung Rechnung = null, Angebot angebot = null)
@@ -199,7 +217,7 @@ namespace DATA.Tools
             return GetPreview(conf.EmailInhalt, User, Rechnung, angebot);
         }
 
-        public static void SendMail(EmailConf conf, Benutzer User, string Head, string Body, Rechnung Rechnung )
+        public static void SendMail(EmailConf conf, Benutzer User, string Head, string Body, Rechnung Rechnung)
         {
 
 

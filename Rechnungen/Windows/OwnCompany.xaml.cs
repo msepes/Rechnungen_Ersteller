@@ -37,6 +37,9 @@ namespace Rechnungen.Forms
             BindControl(nameof(Benutzer.BankName), Benutzer, txtBank);
             BindControl(nameof(Benutzer.IBAN), Benutzer, txtIBAN);
             BindControl(nameof(Benutzer.BIC), Benutzer, txtBIC);
+            BindControl(nameof(Benutzer.Web), Benutzer, txtWeb);
+            BindControl(nameof(Benutzer.LogoPath), Benutzer, txtLogoPath);
+
             addAddress.Bind(Benutzer.addresse);
         }
 

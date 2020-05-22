@@ -24,11 +24,12 @@ module TemplateParser =
         let Point = pchar '.'
         let OpenBracket = pchar '{'
         let CloseBracket = pchar '}'
+        let Alphabet =  anyOf ['A'..'z']
 
         let IgnoreBracket = (lookAhead OpenBracket) |>> fun(c) -> ()
         let literal = (many1CharsTill anyChar (IgnoreBracket <|> eof)) |>> fun(str) -> Literal str
 
-        let KeyWord = (OpenBracket >>. (many1CharsTill anyChar Point .>>. many1CharsTill anyChar CloseBracket))  |>> fun(obj,prop) -> KeyWord (obj, prop)
+        let KeyWord = (OpenBracket >>. (many1CharsTill Alphabet Point .>>. many1CharsTill Alphabet CloseBracket))  |>> fun(obj,prop) -> KeyWord (obj, prop)
 
         let Token = KeyWord <|> literal
 

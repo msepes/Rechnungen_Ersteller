@@ -74,6 +74,8 @@ namespace DATA
         public string BankName { get; set; }
         public string IBAN { get; set; }
         public string BIC { get; set; }
+        public string Web { get; set; }
+        public string LogoPath { get; set; } = @".\FirmLogo.jpg";
         public virtual Adresse addresse { get; set; }
     }
 

@@ -12,7 +12,7 @@
         <Label x:Name="lblPassword" Content="Password" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Width="76"/>
         <TextBox x:Name="txtMailServer" HorizontalAlignment="Left" Margin="86,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="263"/>
         <TextBox x:Name="txtUserName" HorizontalAlignment="Left" Margin="86,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="263"/>
-        <PasswordBox  x:Name="txtPassword"  PasswordChar="*" HorizontalAlignment="Left" Margin="86,72,0,0" VerticalAlignment="Top" Width="263"/>
+        <TextBox  x:Name="txtPassword"  HorizontalAlignment="Left" Margin="86,72,0,0" VerticalAlignment="Top" Width="263"/>
         <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="65" Height="25" Click="btnSave_Click"/>
         <TextBox x:Name="txtTemplate" AcceptsReturn="True" Margin="10,184,10,40"/>
         <Label x:Name="lblTemplate" Content="Email-Inhalt:" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top" Width="76"/>

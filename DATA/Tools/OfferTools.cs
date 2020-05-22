@@ -96,8 +96,8 @@ namespace Angeboten
             if (Angebot.Positions.Count < 1)
                 throw new ArgumentException($"{ nameof(Angebot.Positions) } hat keine Elemente!");
 
-            if (!Directory.Exists(@".\Rechnungen"))
-                Directory.CreateDirectory(@".\Rechnungen");
+            if (!Directory.Exists(@".\Angebote"))
+                Directory.CreateDirectory(@".\Angebote");
 
             var Pfad = Path.GetFullPath(@$".\Angebote\Angebot_{Angebot.Nr}_{Angebot.Kunde.FirmaName}_{Angebot.Datum.ToShortDateString()}.pdf");
 
@@ -113,31 +113,20 @@ namespace Angeboten
 
                 doc.Open();
 
+                if (!string.IsNullOrWhiteSpace(Benutzer.LogoPath)) {
+                var jpg = Image.GetInstance(Path.GetFullPath(Benutzer.LogoPath));
+                jpg.ScaleToFit(100f, 72f);
+                jpg.SpacingBefore = 4f;
+                jpg.SpacingAfter = 1f;
+                jpg.Alignment = Element.ALIGN_RIGHT;
+                doc.Add(jpg);
+                }
+
                 Paragraph prgHeading = new Paragraph();
                 Font fntHead = new Font(baseFont, 20, 1, BaseColor.BLACK);
                 prgHeading.Alignment = Element.ALIGN_CENTER;
                 prgHeading.Add(new Chunk(Benutzer.FirmaName, fntHead));
                 doc.Add(prgHeading);
-
-                Paragraph OwnCompany = new Paragraph();
-                OwnCompany.Alignment = Element.ALIGN_RIGHT;
-                OwnCompany.Add(new Chunk(Benutzer.addresse.ToString()));
-                OwnCompany.Add(lBreak);
-                OwnCompany.Add(lBreak);
-                OwnCompany.Add(new Chunk($"Telefone: {Benutzer.Telefone}"));
-                OwnCompany.Add(lBreak);
-                OwnCompany.Add(new Chunk($"Email: {Benutzer.Email}"));
-                OwnCompany.Add(lBreak);
-                OwnCompany.Add(new Chunk($"Steuernr/UID: {Benutzer.SteuerID}"));
-                OwnCompany.Add(lBreak);
-                OwnCompany.Add(lBreak);
-
-                OwnCompany.Add(new Chunk($"Bank: {Benutzer.BankName}"));
-                OwnCompany.Add(lBreak);
-                OwnCompany.Add(new Chunk($"IBAN: {Benutzer.IBAN}"));
-                OwnCompany.Add(lBreak);
-                OwnCompany.Add(new Chunk($"BIC: {Benutzer.BIC}"));
-                doc.Add(OwnCompany);
 
                 Font fntKunde = new Font(baseFont, 12, 1, BaseColor.BLACK);
                 Font fntHeader = new Font(baseFont, 6, 1, BaseColor.BLACK);
@@ -155,27 +144,22 @@ namespace Angeboten
 
                 PdfPTable pdfTbl = new PdfPTable(3);
                 pdfTbl.HorizontalAlignment = Element.ALIGN_RIGHT;
-                Font fntColHeader = new Font(baseFont, 6, 1, BaseColor.WHITE);
+                Font fntColHeader = new Font(baseFont, 8, Font.BOLDITALIC, BaseColor.BLACK);
 
-                PdfPCell RechnungWort = new PdfPCell(new Phrase("Angebot", new Font(baseFont, 14, 1, BaseColor.BLACK)));
-                RechnungWort.Chunks.Add(lBreak);
-                RechnungWort.Colspan = 3;
-                RechnungWort.HorizontalAlignment = 1;
-
-                pdfTbl.AddCell(RechnungWort);
+                PdfPCell AngebotWort = new PdfPCell(new Phrase("Angebot", new Font(baseFont, 14, 1, BaseColor.BLACK)));
+                AngebotWort.Colspan = 3;
+                AngebotWort.HorizontalAlignment = 1;
+                pdfTbl.AddCell(AngebotWort);
 
                 PdfPCell pdfCell = new PdfPCell();
-                pdfCell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 pdfCell.Phrase = new Phrase("KundenNr", fntColHeader);
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 pdfCell.Phrase = new Phrase("Angebotsnummer", fntColHeader);
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 pdfCell.Phrase = new Phrase("Datum", fntColHeader);
                 pdfTbl.AddCell(pdfCell);
 
@@ -186,7 +170,6 @@ namespace Angeboten
 
                 doc.Add(pdfTbl);
 
-                doc.Add(sep);
                 doc.Add(lBreak);
 
                 Paragraph Begruessung = new Paragraph();
@@ -199,29 +182,29 @@ namespace Angeboten
                 pdfTbl.HorizontalAlignment = Element.ALIGN_JUSTIFIED;
 
                 pdfCell = new PdfPCell();
-                pdfCell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 pdfCell.Phrase = new Phrase("Position", fntColHeader);
+                pdfCell.Border = Rectangle.BOTTOM_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 pdfCell.Phrase = new Phrase("Leistungsbeschreibung", fntColHeader);
+                pdfCell.Border = Rectangle.BOTTOM_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 pdfCell.Phrase = new Phrase("Menge", fntColHeader);
+                pdfCell.Border = Rectangle.BOTTOM_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 pdfCell.Phrase = new Phrase("EINZELPR.", fntColHeader);
+                pdfCell.Border = Rectangle.BOTTOM_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.BackgroundColor = BaseColor.LIGHT_GRAY;
                 pdfCell.Phrase = new Phrase("Gesamt", fntColHeader);
                 pdfTbl.SetTotalWidth(new float[] { 10f, 48f, 14f, 14f, 14f });
+                pdfCell.Border = Rectangle.BOTTOM_BORDER;
                 pdfTbl.WidthPercentage = 100f;
                 pdfTbl.AddCell(pdfCell);
 
@@ -230,12 +213,32 @@ namespace Angeboten
 
                 foreach (var pos in Angebot.Positions)
                 {
-                    pdfTbl.AddCell(new Phrase($"{Counter()}"));
-                    pdfTbl.AddCell(new Phrase($"{pos.Beschreibung}"));
-                    pdfTbl.AddCell(new Phrase($"{pos.Menge}"));
-                    pdfTbl.AddCell(new Phrase($"{pos.Einzeln_Preis} ‎€"));
-                    pdfTbl.AddCell(new Phrase($"{(pos.Einzeln_Preis * pos.Menge)} ‎€"));
+                    pdfCell = new PdfPCell();
+                    pdfCell.Phrase = new Phrase($"{Counter()}");
+                    pdfCell.Border = Rectangle.NO_BORDER;
+                    pdfTbl.AddCell(pdfCell);
+
+                    pdfCell = new PdfPCell();
+                    pdfCell.Phrase = new Phrase($"{pos.Beschreibung}");
+                    pdfCell.Border = Rectangle.NO_BORDER;
+                    pdfTbl.AddCell(pdfCell);
+
+                    pdfCell = new PdfPCell();
+                    pdfCell.Phrase = new Phrase($"{pos.Menge}");
+                    pdfCell.Border = Rectangle.NO_BORDER;
+                    pdfTbl.AddCell(pdfCell);
+
+                    pdfCell = new PdfPCell();
+                    pdfCell.Phrase = new Phrase($"{pos.Einzeln_Preis} ‎€");
+                    pdfCell.Border = Rectangle.NO_BORDER;
+                    pdfTbl.AddCell(pdfCell);
+
+                    pdfCell = new PdfPCell();
+                    pdfCell.Phrase = new Phrase($"{(pos.Einzeln_Preis * pos.Menge)} ‎€");
+                    pdfCell.Border = Rectangle.NO_BORDER;
+                    pdfTbl.AddCell(pdfCell);
                 }
+
                 doc.Add(pdfTbl);
                 doc.Add(lBreak);
 
@@ -286,8 +289,66 @@ namespace Angeboten
                 Final.Add(lBreak);
                 Final.Add(new Chunk("MaxClean"));
                 Final.Add(lBreak);
-                Final.Add(new Chunk("Besuchen Sie uns auf www.max--clean.de"));
+                Final.Add(new Chunk($"Besuchen Sie uns auf {Benutzer.Web}"));
                 doc.Add(Final);
+                doc.Add(lBreak);
+                doc.Add(lBreak);
+                doc.Add(sep);
+
+                pdfTbl = new PdfPTable(3);
+                pdfTbl.WidthPercentage = 100f;
+
+                pdfTbl.HorizontalAlignment = Element.ALIGN_LEFT;
+                
+                Font infFont = new Font(baseFont, 8, 0, BaseColor.BLACK);
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase(Benutzer.FirmaName, infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase($"Telefone: {Benutzer.Telefone}", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase(Benutzer.BankName, infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase($"Steuernr/UID: {Benutzer.SteuerID}", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+                
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase($"Email: {Benutzer.Email}", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase($"IBAN: {Benutzer.IBAN}", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase(Benutzer.addresse.ToString(), infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase($"Web: {Benutzer.Web}", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase($"BIC: {Benutzer.BIC}", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                doc.Add(pdfTbl);
+               
 
                 return Pfad;
             }
