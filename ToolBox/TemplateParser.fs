@@ -14,7 +14,7 @@ module TemplateParser =
        match x with
        | KeyWord (object,property)-> keyWord <- (object,property); true
        | _ -> false
-     member x.TryLiteral([<Out>] literal:byref<string>) =
+     member x.TryGetLiteral([<Out>] literal:byref<string>) =
        match x with
        | Literal value -> literal <- value; true
        | _ -> false

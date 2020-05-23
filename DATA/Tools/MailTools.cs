@@ -17,10 +17,8 @@ namespace DATA.Tools
 
         private static string GetStringFromToken(TemplateParser.Token token, Benutzer User, Rechnung Rechnung = null, Angebot angebot = null)
         {
-            if (token.TryLiteral(out string literal))
-            {
+            if (token.TryGetLiteral(out string literal))
                 return literal;
-            }
 
             if (!token.TryGetKeyWord(out Tuple<string, string> keyword))
                 throw new Exception("parse Error");
@@ -75,7 +73,7 @@ namespace DATA.Tools
                 case nameof(rechnung.MitSteuer):
                     return rechnung.MitSteuer().ToString();
                 default:
-                    return PropertyName;
+                    return $"{{{nameof(Rechnung)}.{PropertyName}}}";
             }
 
         }
@@ -105,7 +103,7 @@ namespace DATA.Tools
                 case nameof(angebot.MitSteuer):
                     return angebot.MitSteuer().ToString();
                 default:
-                    return PropertyName;
+                    return  $"{{{nameof(Angebot)}.{PropertyName}}}";
             }
 
         }
@@ -133,7 +131,7 @@ namespace DATA.Tools
                     return kunde.FirmaName;
 
                 default:
-                    return PropertyName;
+                    return $"{{{nameof(kunde)}.{PropertyName}}}";
             }
         }
 
@@ -175,7 +173,7 @@ namespace DATA.Tools
                     return user.Web;
 
                 default:
-                    return PropertyName;
+                    return $"{{{nameof(Benutzer)}.{PropertyName}}}";
             }
         }
 
