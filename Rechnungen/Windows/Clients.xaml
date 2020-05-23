@@ -38,6 +38,8 @@
             <TextBox x:Name="txtEmail" HorizontalAlignment="Left" Margin="79,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" InputScope="Number" LostFocus="txtNummer_LostFocus"/>
             <Label x:Name="lblTelephone" Content="Telephone" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5,101,0,0" VerticalAlignment="Top" Width="74"/>
             <TextBox x:Name="txtTelephone" HorizontalAlignment="Left" Margin="79,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" InputScope="Number" LostFocus="txtNummer_LostFocus"/>
+            <Label x:Name="lblBillsCount" Content="Rechnungenanzahl" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="24,0,0,61" VerticalAlignment="Bottom" Width="113"/>
+            <TextBox x:Name="txtBillsCount" HorizontalAlignment="Left" Margin="137,0,0,65" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="224" IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>

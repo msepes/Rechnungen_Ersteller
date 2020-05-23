@@ -64,6 +64,12 @@ namespace Rechnungen
              RechnungspositionSet.RemoveRange(Bill.Positions);
 
             RechnungSet.Remove(Bill);
+
+
+            var rechnung = Inserted.FirstOrDefault(c => c.ID == Bill.ID);
+            if (rechnung != null)
+                Inserted.Remove(rechnung);
+
         }
 
         public static Rechnung GetRechnung(DbSet<Rechnung> RechnungSet, long ID)

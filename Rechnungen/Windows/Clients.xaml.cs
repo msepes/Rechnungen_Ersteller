@@ -216,10 +216,14 @@ namespace Rechnungen.Windows
             var selectedClient = GetSelectedKunde();
             if (selectedClient == null)
             {
+                txtBillsCount.Text = "0";
                 txtGesamt.Text = "0 €";
                 return;
             }
-            txtGesamt.Text = $"{GetRechnungen(selectedClient)?.Select(r => r.Summe()).Sum()} €";
+            var Rechnungen = GetRechnungen(selectedClient);
+
+            txtBillsCount.Text = $"{Rechnungen?.Count()}";
+            txtGesamt.Text = $"{Rechnungen?.Select(r => r.Summe()).Sum()} €";
 
         }
 

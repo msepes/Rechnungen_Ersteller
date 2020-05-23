@@ -41,7 +41,7 @@ namespace Rechnungen
         }
 
 
-        public static void DeleteKunde(DbSet<Kunde> KundenSet, Kunde Client)
+        public static void DeleteKunde(DbSet<Kunde> KundenSet, DbSet<Adresse> AdresseSet, Kunde Client)
         {
             if (KundenSet.Find(Client.ID) == null)
                 throw new Exception($"DeleteKunde -> Kunde mit dem ID '{Client.ID}' wurde nicht gefunden");
@@ -55,6 +55,14 @@ namespace Rechnungen
                 throw new Exception($"Der Kunde hat {AngeboteCount} Angebote, daher kann nicht gelöscht werden");
 
             KundenSet.Remove(Client);
+
+            if (Client.addresse != null)
+                AdresseSet.Remove(Client.addresse);
+
+            var kunde = Inserted.FirstOrDefault(c => c.ID == Client.ID);
+            if (kunde != null)
+                Inserted.Remove(kunde);
+
         }
 
         private static IEnumerable<Kunde> GetAll(DbSet<Kunde> KundenSet) => KundenSet.OrderBy(k => k.Nr).ToList().Concat(Inserted);

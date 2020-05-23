@@ -53,6 +53,10 @@ namespace Angeboten
                 AngebotspositionSet.RemoveRange(Offer.Positions);
 
             AngebotSet.Remove(Offer);
+
+            var angebot = Inserted.FirstOrDefault(c => c.ID == Offer.ID);
+            if (angebot != null)
+                Inserted.Remove(angebot);
         }
 
         public static void AcceptChanges() => 

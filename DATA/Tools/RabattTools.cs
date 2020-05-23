@@ -53,6 +53,10 @@ namespace Rechnungen.Tools
                 throw new Exception($"Rabatt kann nicht gelöscht werden, ({AngebotCount}) Agebote verweisen auf die Rabatt");
 
             RabattSet.Remove(Rabatt);
+
+            var rabat = Inserted.FirstOrDefault(c => c.ID == Rabatt.ID);
+            if (rabat != null)
+                Inserted.Remove(Rabatt);
         }
 
         public static Rabbat GetRabatt(DbSet<Rabbat> RabattSet, long ID)
