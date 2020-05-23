@@ -29,7 +29,7 @@
             <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="66,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" Height="26" InputScope="Number"/>
             <TextBox x:Name="txtUmsatz" HorizontalAlignment="Left" Margin="359,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Height="26" InputScope="Number" Text="19" MaxLength="2"/>
             <DatePicker x:Name="dtpDatum" HorizontalAlignment="Left" Margin="66,36,0,0" VerticalAlignment="Top" Width="202"/>
-            <DataGrid x:Name="dgrPositionen" Margin="6,128,6,53" SizeChanged="dgrPositionen_SizeChanged" CellEditEnding="dgrPositionen_CellEditEnding"/>
+            <DataGrid x:Name="dgrPositionen" Margin="6,128,6,53" SizeChanged="dgrPositionen_SizeChanged" />
             <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="63,0,0,20" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="149" IsEnabled="False"/>
             <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,6,13" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnSave_Click"/>
             <Button x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right" Margin="0,0,97,13" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnDrucken_Click" IsEnabled="False"/>
