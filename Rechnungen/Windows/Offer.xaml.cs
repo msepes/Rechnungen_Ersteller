@@ -263,10 +263,6 @@ namespace Rechnungen.Windows
           GridTools.SetColumnsSize(dgrPositionen);
         }
 
-        private void dgrPositionen_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-        }
-
         private void btnEmail_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(User.Email))

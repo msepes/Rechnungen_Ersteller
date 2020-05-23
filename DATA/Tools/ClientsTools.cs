@@ -1,4 +1,5 @@
-﻿using DATA;
+﻿using Angeboten;
+using DATA;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -41,16 +42,17 @@ namespace Rechnungen
         }
 
 
-        public static void DeleteKunde(DbSet<Kunde> KundenSet, DbSet<Adresse> AdresseSet, Kunde Client)
+        public static void DeleteKunde(DbSet<Kunde> KundenSet, DbSet<Adresse> AdresseSet, DbSet<Rechnung> BillSet, DbSet<Angebot> OfferSet, Kunde Client)
         {
             if (KundenSet.Find(Client.ID) == null)
                 throw new Exception($"DeleteKunde -> Kunde mit dem ID '{Client.ID}' wurde nicht gefunden");
 
-            var RechnungenCount = Client.Rechnungen.Count;
+         
+            var RechnungenCount = RechnungTools.Count(BillSet, Client);
             if (RechnungenCount > 0) 
                 throw new Exception($"Der Kunde hat {RechnungenCount} Rechnung, daher kann nicht gelöscht werden");
 
-            var AngeboteCount = Client.Angebote.Count;
+            var AngeboteCount = OfferTools.Count(OfferSet, Client);
             if (AngeboteCount > 0)
                 throw new Exception($"Der Kunde hat {AngeboteCount} Angebote, daher kann nicht gelöscht werden");
 

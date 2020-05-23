@@ -65,6 +65,7 @@ namespace Rechnungen
 
             RechnungSet.Remove(Bill);
 
+            Bill.Kunde?.Rechnungen?.Remove(Bill);
 
             var rechnung = Inserted.FirstOrDefault(c => c.ID == Bill.ID);
             if (rechnung != null)
@@ -99,6 +100,11 @@ namespace Rechnungen
                               .OrderBy(r => r.Nr)
                               .ToList()
                               .Concat(Inserted.Where(r => r.Kunde.ID == client.ID));
+        }
+
+        public static int Count(DbSet<Rechnung> RechnungSet, Kunde client)
+        {
+            return RechnungSet.Count(r => r.Kunde.ID == client.ID);
         }
 
         public static void AcceptChanges()

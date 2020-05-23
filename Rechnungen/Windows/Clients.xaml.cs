@@ -141,6 +141,11 @@ namespace Rechnungen.Windows
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            ShowAngebote();
+        }
+
+        private void ShowAngebote() 
+        {
             if (!TrySave())
                 return;
 
@@ -161,7 +166,11 @@ namespace Rechnungen.Windows
 
         private void btnRechnung_Click(object sender, RoutedEventArgs e)
         {
+            ShowRechnungen();
+        }
 
+        private void ShowRechnungen() 
+        {
             if (!TrySave())
                 return;
 
@@ -225,6 +234,16 @@ namespace Rechnungen.Windows
             txtBillsCount.Text = $"{Rechnungen?.Count()}";
             txtGesamt.Text = $"{Rechnungen?.Select(r => r.Summe()).Sum()} €";
 
+        }
+
+        private void Angebote_Click(object sender, RoutedEventArgs e)
+        {
+            ShowAngebote();
+        }
+
+        private void Rechnungen_Click(object sender, RoutedEventArgs e)
+        {
+            ShowRechnungen();
         }
 
         private void New_Click(object sender, RoutedEventArgs e)
@@ -299,11 +318,11 @@ namespace Rechnungen.Windows
 
         private void lstBox_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var item = lstBox.ContextMenu.Items.Cast<MenuItem>().FirstOrDefault(i => i.Name == "DELETE");
-            if (item == null)
-                return;
-
-            item.IsEnabled = lstBox.SelectedItems?.Count > 0 && lstBox.SelectedItem != null;
+            var items = lstBox.ContextMenu.Items.Cast<MenuItem>().Where(i => i.Name == "DELETE" || 
+                                                                             i.Name == "Rechnungen" || 
+                                                                             i.Name == "Angebote");
+            foreach (var item in items)
+                item.IsEnabled = lstBox.SelectedItems?.Count > 0 && lstBox.SelectedItem != null;
         }
 
         private void txtFirma_LostFocus(object sender, RoutedEventArgs e)

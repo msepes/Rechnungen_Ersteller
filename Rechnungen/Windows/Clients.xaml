@@ -18,6 +18,8 @@
                 <ContextMenu>
                     <MenuItem Name ="NEW" Header="Neue Kunde" Click="New_Click" />
                     <MenuItem Name="DELETE" Header="Kunde löschen" Click="Delete_Click" />
+                    <MenuItem Name ="Rechnungen" Header="Rechnungen" Click="Rechnungen_Click" />
+                    <MenuItem Name="Angebote" Header="Angebote" Click="Angebote_Click" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

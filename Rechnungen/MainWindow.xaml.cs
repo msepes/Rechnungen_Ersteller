@@ -110,7 +110,7 @@ namespace Rechnungen
                          (ID) => ClientsTools.GetKunde(context.Kunden, ID),
                          () => ClientsTools.GetKunden(context.Kunden),
                          () => context.SaveChanges(),
-                         (k) => ClientsTools.DeleteKunde(context.Kunden, context.Adressen, k),
+                         (k) => ClientsTools.DeleteKunde(context.Kunden, context.Adressen, context.Rechnungen, context.Angebote, k),
                       
                          BenutzerTools.GetBenutzer(context.Benutzer,context.Adressen));
 

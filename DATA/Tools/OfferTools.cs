@@ -53,6 +53,7 @@ namespace Angeboten
                 AngebotspositionSet.RemoveRange(Offer.Positions);
 
             AngebotSet.Remove(Offer);
+            Offer.Kunde?.Angebote?.Remove(Offer);
 
             var angebot = Inserted.FirstOrDefault(c => c.ID == Offer.ID);
             if (angebot != null)
@@ -85,7 +86,12 @@ namespace Angeboten
 
         private static IEnumerable<Angebot> GetAll(DbSet<Angebot> AngebotSet) => 
                AngebotSet.ToList().Concat(Inserted);
-        
+
+        public static int Count(DbSet<Angebot> AngebotSet, Kunde client)
+        {
+            return AngebotSet.Count(r => r.Kunde.ID == client.ID);
+        }
+
         public static string PrintOffer(Angebot Angebot, Benutzer Benutzer)
         {
             if (Angebot == null)

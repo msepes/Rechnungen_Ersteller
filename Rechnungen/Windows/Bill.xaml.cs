@@ -327,5 +327,10 @@ namespace Rechnungen.Windows
             MainWindow.ShowWindow(frm);
 
         }
+
+        private void dgrPositionen_CurrentCellChanged(object sender, EventArgs e)
+        {
+            SetSummenAnzeige();
+        }
     }
 }
