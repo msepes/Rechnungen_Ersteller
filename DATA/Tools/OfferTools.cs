@@ -19,6 +19,9 @@ namespace Angeboten
 
         public static Angebot NewAngebot(DbSet<Angebot> AngebotSet, Kunde client)
         {
+            RegistryTools.ThrowIFLimitReched(AngebotSet.Count());
+
+
             var Angebot = new Angebot();
 
             var maxNr = AngebotSet.Count() > 0 ? AngebotSet.Max(r => r.Nr):0;
@@ -46,6 +49,9 @@ namespace Angeboten
 
         public static void DeleteAngebot(DbSet<Angebot> AngebotSet, DbSet<Angebotsposition> AngebotspositionSet, Angebot Offer)
         {
+            RegistryTools.ThrowIFLimitReched(AngebotSet.Count());
+
+
             if (AngebotSet.Find(Offer.ID) == null)
                 throw new Exception($"DeleteAngebot -> Angebot mit dem ID '{Offer.ID}' wurde nicht gefunden");
 

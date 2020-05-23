@@ -32,7 +32,7 @@ namespace DATA.Tools
                 case nameof(Rechnung):
                     return GetProperty(Property, Rechnung);
                 case nameof(Kunde):
-                    return GetProperty(Property, Rechnung.Kunde);
+                    return GetProperty(Property, Rechnung==null?angebot.Kunde:Rechnung.Kunde);
 
                 case nameof(Benutzer):
                     return GetProperty(Property, User);

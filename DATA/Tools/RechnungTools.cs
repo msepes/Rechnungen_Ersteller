@@ -27,6 +27,8 @@ namespace Rechnungen
 
         public static Rechnung NewRechnung(DbSet<Rechnung> RechnungSet, Kunde client)
         {
+            RegistryTools.ThrowIFLimitReched(RechnungSet.Count());
+
             var Rechnung = new Rechnung();
 
             var maxID = RechnungSet.Count() > 0 ? RechnungSet.Max(r => r.ID):0;
@@ -57,6 +59,9 @@ namespace Rechnungen
 
         public static void DeleteRechnung(DbSet<Rechnung> RechnungSet, DbSet<Rechnungsposition> RechnungspositionSet, Rechnung Bill)
         {
+            RegistryTools.ThrowIFLimitReched(RechnungSet.Count());
+
+
             if (RechnungSet.Find(Bill.ID) == null)
                 throw new Exception($"DeleteRechnung -> Rechnung mit dem ID '{Bill.ID}' wurde nicht gefunden");
 
