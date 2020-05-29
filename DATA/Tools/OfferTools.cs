@@ -9,6 +9,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.draw;
 using System.IO;
+using static System.Convert;
 
 namespace Angeboten
 {
@@ -271,13 +272,13 @@ namespace Angeboten
                     Netto.Add(lBreak);
                     Netto.Add(new Chunk($"{Angebot.Rabbat}"));
                     Netto.Add(new Chunk(spaces));
-                    Netto.Add(new Chunk($"- {(Angebot.Netto() * (Angebot.Rabbat.satz / 100)).ToString("F2")} ‎€"));
+                    Netto.Add(new Chunk($"- {(Angebot.Netto() * (ToDecimal(Angebot.Rabbat.satz) / 100m)).ToString("F2")} ‎€"));
                 }
 
                 Netto.Add(lBreak);
                 Netto.Add(new Chunk($"{Angebot.Umsatzsteuer}% Mehrwertsteuer"));
                 Netto.Add(new Chunk(spaces));
-                Netto.Add(new Chunk($"+ {(Angebot.MitRabatt() * (Angebot.Umsatzsteuer / 100)).ToString("F2")} ‎€"));
+                Netto.Add(new Chunk($"+ {(Angebot.MitRabatt() * (ToDecimal(Angebot.Umsatzsteuer) / 100m)).ToString("F2")} ‎€"));
 
                 doc.Add(Netto);
                 doc.Add(lBreak);

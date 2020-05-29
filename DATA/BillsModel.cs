@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-
+using static System.Convert;
 namespace DATA
 {
     public class Adresse
@@ -95,39 +95,39 @@ namespace DATA
             return $"{Nr} - {Datum.ToShortDateString()}";
         }
 
-        public double Netto()
+        public decimal Netto()
         {
-            var sum = this.Positions?.Select(p => p.Einzeln_Preis * p.Menge).Sum();
+            var sum = this.Positions?.Select(p => ToDecimal(p.Einzeln_Preis) * ToDecimal(p.Menge)).Sum();
             if (!sum.HasValue)
-                return 0.0;
+                return 0M;
 
             return sum.Value;
         }
 
-        public double Steuer()
+        public decimal Steuer()
         {
-            return this.Umsatzsteuer / 100 * MitRabatt();
+            return ToDecimal(this.Umsatzsteuer) / 100m * MitRabatt();
         }
 
-        public double MitSteuer()
+        public decimal MitSteuer()
         {
             return MitRabatt() + Steuer();
         }
 
-        public double Rabatt()
+        public decimal Rabatt()
         {
             if (!(this.Rabbat?.satz > 1))
-                return 0;
+                return 0m;
 
-            return this.Rabbat.satz / 100 * Netto();
+            return ToDecimal(this.Rabbat.satz) / 100m * Netto();
         }
 
-        public double MitRabatt()
+        public decimal MitRabatt()
         {
             return Netto() - Rabatt();
         }
 
-        public double Summe()
+        public decimal Summe()
         {
             return MitSteuer();
         }
@@ -148,39 +148,39 @@ namespace DATA
             return $"{Nr} - {Datum.ToShortDateString()}";
         }
 
-        public double Netto()
+        public decimal Netto()
         {
-            var sum = this.Positions?.Select(p => p.Einzeln_Preis * p.Menge).Sum();
+            var sum = this.Positions?.Select(p => ToDecimal(p.Einzeln_Preis) * ToDecimal(p.Menge)).Sum();
             if (!sum.HasValue)
-                return 0.0;
+                return 0M;
 
             return sum.Value;
         }
 
-        public double Steuer()
+        public decimal Steuer()
         {
-            return this.Umsatzsteuer / 100 * MitRabatt();
+            return ToDecimal(this.Umsatzsteuer) / 100m * MitRabatt();
         }
 
-        public double MitSteuer()
+        public decimal MitSteuer()
         {
             return MitRabatt() + Steuer();
         }
 
-        public double Rabatt()
+        public decimal Rabatt()
         {
             if (!(this.Rabbat?.satz > 1))
-                return 0;
+                return 0m;
 
-            return this.Rabbat.satz / 100 * Netto();
+            return ToDecimal(this.Rabbat.satz) / 100m * Netto();
         }
 
-        public double MitRabatt()
+        public decimal MitRabatt()
         {
             return Netto() - Rabatt();
         }
 
-        public double Summe()
+        public decimal Summe()
         {
             return MitSteuer();
         }

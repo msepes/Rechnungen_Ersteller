@@ -10,6 +10,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using static System.Convert;
 
 namespace Rechnungen
 {
@@ -303,13 +304,13 @@ namespace Rechnungen
                     Netto.Add(lBreak);
                     Netto.Add(new Chunk($"{Rechnung.Rabbat}"));
                     Netto.Add(new Chunk(spaces));
-                    Netto.Add(new Chunk($"- {(Rechnung.Netto() * (Rechnung.Rabbat.satz / 100)).ToString("F2")} ‎€"));
+                    Netto.Add(new Chunk($"- {(Rechnung.Netto() * (ToDecimal(Rechnung.Rabbat.satz) / 100m)).ToString("F2")} ‎€"));
                 }
 
                 Netto.Add(lBreak);
                 Netto.Add(new Chunk($"{Rechnung.Umsatzsteuer}% Mehrwertsteuer"));
                 Netto.Add(new Chunk(spaces));
-                Netto.Add(new Chunk($"+ {(Rechnung.MitRabatt() * (Rechnung.Umsatzsteuer / 100)).ToString("F2")} ‎€"));
+                Netto.Add(new Chunk($"+ {(Rechnung.MitRabatt() * (ToDecimal(Rechnung.Umsatzsteuer) / 100m)).ToString("F2")} ‎€"));
 
                 doc.Add(Netto);
                 doc.Add(lBreak);

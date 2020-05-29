@@ -232,7 +232,7 @@ namespace Rechnungen.Windows
             var Rechnungen = GetRechnungen(selectedClient);
 
             txtBillsCount.Text = $"{Rechnungen?.Count()}";
-            txtGesamt.Text = $"{Rechnungen?.Select(r => r.Summe()).Sum()} €";
+            txtGesamt.Text = $"{Rechnungen?.Select(r => r.Summe()).Sum().ToString("F2")} €";
 
         }
 
