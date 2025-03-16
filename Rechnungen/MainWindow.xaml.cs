@@ -1,5 +1,6 @@
 ﻿using Angeboten;
 using DATA;
+using DATA.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Rechnungen.Dialogs;
@@ -174,6 +175,18 @@ namespace Rechnungen
             ShowWindow(frm);
         }
 
+        private void Zusatztext_Click(object sender, RoutedEventArgs e)
+        {
+            Zusatztext zusatztext = new Zusatztext();
+            zusatztext.Register(() => ZusatzTexteTools.NewRabatt(MainWindow.context.ZusatzTexte), 
+                                ID => ZusatzTexteTools.GetZusatzText(MainWindow.context.ZusatzTexte, ID), 
+                                () => ZusatzTexteTools.GetZusatzTexte(MainWindow.context.ZusatzTexte), 
+                                r => ZusatzTexteTools.DeleteRabatt(MainWindow.context.ZusatzTexte, MainWindow.context.Rechnungen, r),
+                                () => MainWindow.context.SaveChanges());
+
+            MainWindow.ShowWindow((Window)zusatztext);
+        }
+
         public static void ShowWindow(Window window) 
         {
             try
@@ -185,6 +198,7 @@ namespace Rechnungen
                 RechnungTools.AcceptChanges();
                 OfferTools.AcceptChanges();
                 ClientsTools.AcceptChanges();
+                ZusatzTexteTools.AcceptChanges();
             }
             catch (Exception ex)
             {

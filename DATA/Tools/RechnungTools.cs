@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using static System.Convert;
 
@@ -86,6 +87,7 @@ namespace Rechnungen
                               .Include(r => r.Rabbat)
                               .Include(r => r.Positions)
                               .Include(r => r.Kunde)
+                              .Include(r => r.ZusatzText)
                               .Include(r => r.Kunde.addresse)
                               .ToList()
                               .Concat(Inserted.Where(r => r.ID == ID))
@@ -103,6 +105,7 @@ namespace Rechnungen
                               .Include(r => r.Rabbat)
                               .Include(r => r.Positions)
                               .Include(r => r.Kunde)
+                              .Include(r => r.ZusatzText)
                               .OrderBy(r => r.Nr)
                               .ToList()
                               .Concat(Inserted.Where(r => r.Kunde.ID == client.ID));
@@ -138,7 +141,7 @@ namespace Rechnungen
             var Pfad = Path.GetFullPath(@$".\Rechnungen\Rechnung_{Rechnung.Kunde.FirmaName}_{Rechnung.Nr}_{Rechnung.Datum.ToShortDateString()}.pdf");
 
             FileStream fs = new FileStream(Pfad, FileMode.Create, FileAccess.Write, FileShare.None);
-            Document doc = new Document(PageSize.A4);
+            iTextSharp.text.Document doc = new iTextSharp.text.Document(PageSize.A4);
             PdfWriter prw = PdfWriter.GetInstance(doc, fs);
 
 
@@ -221,11 +224,29 @@ namespace Rechnungen
                 doc.Add(pdfTbl);
                 doc.Add(lBreak);
 
+                if (!string.IsNullOrWhiteSpace(Rechnung?.ZusatzText?.position1))
+                {
+                    Paragraph zusatz1 = new Paragraph();
+                    zusatz1.Alignment = 0;
+                    zusatz1.Add(new Chunk(Rechnung.ZusatzText.position1));
+                    doc.Add(zusatz1);
+                    doc.Add(lBreak);
+                }
+
                 Paragraph Begruessung = new Paragraph();
                 Begruessung.Alignment = Element.ALIGN_LEFT;
                 Begruessung.Add(new Chunk("Sehr geehrte Damen und Herren,"));
                 doc.Add(Begruessung);
                 doc.Add(lBreak);
+
+                if (!string.IsNullOrWhiteSpace(Rechnung?.ZusatzText?.position2))
+                {
+                    Paragraph zusatz2 = new Paragraph();
+                    zusatz2.Alignment = 0;
+                    zusatz2.Add(new Chunk(Rechnung.ZusatzText.position2));
+                    doc.Add(zusatz2);
+                    doc.Add(lBreak);
+                }
 
                 pdfTbl = new PdfPTable(5);
                 pdfTbl.HorizontalAlignment = Element.ALIGN_JUSTIFIED;
@@ -339,6 +360,15 @@ namespace Rechnungen
                     doc.Add(lBreak);
                 }
 
+                if (!string.IsNullOrWhiteSpace(Rechnung?.ZusatzText?.position3))
+                {
+                    Paragraph zusatz3 = new Paragraph();
+                    zusatz3.Alignment = 0;
+                    zusatz3.Add(new Chunk(Rechnung.ZusatzText.position3));
+                    doc.Add(zusatz3);
+                    doc.Add(lBreak);
+                }
+
                 doc.Add(sep);
 
                 Paragraph Final = new Paragraph();
@@ -346,6 +376,16 @@ namespace Rechnungen
                 Final.Add(new Chunk("Bitte überweisen Sie den Betrag innerhalb von 7 Tagen auf unser Konto."));
                 Final.Add(lBreak);
                 Final.Add(lBreak);
+
+                if (!string.IsNullOrWhiteSpace(Rechnung?.ZusatzText?.position4))
+                {
+                    Paragraph zusatz4 = new Paragraph();
+                    zusatz4.Alignment = 0;
+                    zusatz4.Add(new Chunk(Rechnung.ZusatzText.position4));
+                    doc.Add(zusatz4);
+                    doc.Add(lBreak);
+                }
+
                 Final.Add(new Chunk("Mit freundlichen Grüßen."));
                 Final.Add(lBreak);
                 Final.Add(lBreak);
@@ -355,6 +395,16 @@ namespace Rechnungen
                 doc.Add(Final);
                 doc.Add(lBreak);
                 doc.Add(lBreak);
+
+                if (!string.IsNullOrWhiteSpace(Rechnung?.ZusatzText?.position5))
+                {
+                    Paragraph zusatz5 = new Paragraph();
+                    zusatz5.Alignment = 0;
+                    zusatz5.Add(new Chunk(Rechnung.ZusatzText.position5));
+                    doc.Add(zusatz5);
+                    doc.Add(lBreak);
+                }
+
                 doc.Add(sep);
 
                 pdfTbl = new PdfPTable(3);
