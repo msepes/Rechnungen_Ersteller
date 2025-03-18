@@ -27,6 +27,7 @@ namespace Rechnungen.Windows
         private Action<Rechnung> DeleteRechnung;
         private Func<Rechnung, string>  PrintBill;
         private Func<IEnumerable<Rabbat>> GetRabatte;
+        private Func<IEnumerable<ZusatzText>> GetZusatztexte;
         private Func<EmailConf> GetConfRechnung;
         private Func<EmailConf> GetConfAngebot;
 
@@ -65,6 +66,7 @@ namespace Rechnungen.Windows
                                      Action<Rechnung> DeleteRechnung,
                                      Func<EmailConf> GetConfRechnung,
                                      Func<IEnumerable<Rabbat>> GetRabatte,
+                                     Func<IEnumerable<ZusatzText>> GetZusatzTexte,
                                      Func<Rechnung, string> PrintBill)
         {
             this.NewRechnung = NewRechnung;
@@ -72,6 +74,7 @@ namespace Rechnungen.Windows
             this.GetRechnungen = GetRechnungen;
             this.DeleteRechnung = DeleteRechnung;
             this.GetRabatte = GetRabatte;
+            this.GetZusatztexte = GetZusatzTexte;
             this.PrintBill = PrintBill;
             this.GetConfRechnung = GetConfRechnung;
         }
@@ -182,6 +185,7 @@ namespace Rechnungen.Windows
                             Save,
                             DeleteRechnung,
                             GetRabatte,
+                            GetZusatztexte,
                             PrintBill,
                             GetConfRechnung,
                             User

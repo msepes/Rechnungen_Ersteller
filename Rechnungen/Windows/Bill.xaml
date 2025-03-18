@@ -4,50 +4,95 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rechnungen.Windows"
-        mc:Ignorable="d"
-        Title="Rechnungen" Height="674" Width="1241" Icon="/logo.jpg">
+        Title="Rechnungen" Height="723" Width="1241" Icon="/logo.jpg">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="329*"/>
             <ColumnDefinition Width="912*"/>
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0,17,0,10" Width="6"/>
-        <ListBox x:Name="lstBox" SelectionChanged="lstBox_SelectionChanged" ContextMenuOpening="lstBox_ContextMenuOpening">
-            <ListBox.ContextMenu>
+        <ListBox SelectionChanged="lstBox_SelectionChanged" ContextMenuOpening="lstBox_ContextMenuOpening"
+             x:Name="lstBox">
+            <FrameworkElement.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Name ="NEW" Header="Neue Rechnung" Click="New_Click" />
-                    <MenuItem Name="DELETE" Header="Rechnung löschen" Click="Delete_Click" />
+                    <MenuItem Click="New_Click" Name="NEW" Header="Neue Rechnung"/>
+                    <MenuItem Click="Delete_Click" Name="DELETE" Header="Rechnung löschen"/>
                 </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox >
-        <Grid x:Name="panel1" Grid.Column="1"  Margin="11,0,0,0">
+            </FrameworkElement.ContextMenu>
+        </ListBox>
+        <Grid x:Name="panel1" Column="1" Margin="11,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="lblNummer" Content="Nummer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="68"/>
-            <Label x:Name="lblUmsatz" Content="Umsatzsteuer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="302,12,0,0" VerticalAlignment="Top" Width="90"/>
-            <Label x:Name="lblDatum" Content="Datum" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="16,41,0,0" VerticalAlignment="Top" Width="63"/>
-            <Label x:Name="lblGesamt" Content="Gesamt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,17" VerticalAlignment="Bottom" Width="60"/>
-            <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="78,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213" Height="26" InputScope="Number" AutomationProperties.HelpText="Rechnungsnummer"/>
-            <TextBox x:Name="txtUmsatz" HorizontalAlignment="Left" Margin="393,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="197" Height="26" InputScope="Number" Text="19" MaxLength="2" LostFocus="txtUmsatz_LostFocus"/>
+            <Label x:Name="lblNummer" Content="Nummer" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,10,0,0"
+             VerticalAlignment="Top" Width="68"/>
+            <Label x:Name="lblUmsatz" Content="Umsatzsteuer" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="302,12,0,0"
+             VerticalAlignment="Top" Width="90"/>
+            <Label x:Name="lblDatum" Content="Datum" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="16,41,0,0"
+             VerticalAlignment="Top" Width="63"/>
+            <Label x:Name="lblGesamt" Content="Gesamt" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,17"
+             VerticalAlignment="Bottom" Width="60"/>
+            <TextBox x:Name="txtNummer" HorizontalAlignment="Left" Margin="78,10,0,0" TextWrapping="Wrap"
+               VerticalAlignment="Top" Width="213" Height="26" InputScope="Number"
+               AutomationProperties.HelpText="Rechnungsnummer"/>
+            <TextBox LostFocus="txtUmsatz_LostFocus" x:Name="txtUmsatz" HorizontalAlignment="Left" Margin="393,12,0,0"
+               TextWrapping="Wrap" VerticalAlignment="Top" Width="197" Height="26" InputScope="Number" Text="19"
+               MaxLength="2"/>
             <DatePicker x:Name="dtpDatum" HorizontalAlignment="Left" Margin="79,42,0,0" VerticalAlignment="Top" Width="212"/>
-            <DataGrid x:Name="dgrPositionen" Margin="4,136,8,132" SizeChanged="dgrPositionen_SizeChanged" CellEditEnding="dgrPositionen_CellEditEnding" CurrentCellChanged="dgrPositionen_CurrentCellChanged"/>
-            <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="79,0,0,21" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" FontSize="16" FontWeight="Bold"/>
-            <Button x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right" Margin="0,0,10,14" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnSave_Click"/>
-            <Label x:Name="lblLeistungsdatum" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Content="Leistungsdatum" Margin="296,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="98"/>
-            <DatePicker x:Name="dtpLeistungsdatum" HorizontalAlignment="Left" Margin="393,43,0,0" VerticalAlignment="Top" Width="197"/>
-            <Button x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right" Margin="0,0,99,14" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnDrucken_Click" IsEnabled="False"/>
-            <ComboBox x:Name="cboRabatt" HorizontalAlignment="Left" Margin="78,76,0,0" VerticalAlignment="Top" Width="512" SelectionChanged="cboRabatt_SelectionChanged"/>
-            <Label x:Name="lblRabatt" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="22,74,0,0" VerticalAlignment="Top" Width="56"/>
-            <Label x:Name="lblClient" Content="Kunde" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="11,105,0,0" VerticalAlignment="Top" Width="68"/>
-            <TextBox x:Name="txtClient" HorizontalAlignment="Left" Margin="79,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="511" Height="26" InputScope="Number" AutomationProperties.HelpText="Rechnungsnummer" IsEnabled="False"/>
-            <Label x:Name="lblRabatt1" Content="Rabatt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,73" VerticalAlignment="Bottom" Width="61"/>
-            <TextBox x:Name="txtRabatt" HorizontalAlignment="Left" Margin="79,0,0,77" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" Foreground="Red" FontSize="16" FontWeight="Bold"/>
-            <Label x:Name="lblUmsatzsteuer" Content="Steuer" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,48" VerticalAlignment="Bottom" Width="62"/>
-            <TextBox x:Name="txtUmsatzsteuer" HorizontalAlignment="Left" Margin="79,0,0,52" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" Foreground="Lime" FontSize="16" FontWeight="Bold"/>
-            <Label x:Name="lblNetto" Content="Netto" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,98" VerticalAlignment="Bottom" Width="61"/>
-            <TextBox x:Name="txtNetto" HorizontalAlignment="Left" Margin="79,0,0,102" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False" Foreground="Lime" FontSize="16" FontWeight="Bold"/>
-            <Button x:Name="btnMail" Content="Email" HorizontalAlignment="Right" Margin="0,0,190,14" VerticalAlignment="Bottom" Width="86" Height="32" Click="btnMail_Click" IsEnabled="False"/>
+            <DataGrid SizeChanged="dgrPositionen_SizeChanged" CellEditEnding="dgrPositionen_CellEditEnding"
+                CurrentCellChanged="dgrPositionen_CurrentCellChanged" x:Name="dgrPositionen" Margin="4,165,8,132"/>
+            <TextBox x:Name="txtGesamt" HorizontalAlignment="Left" Margin="79,0,0,21" TextWrapping="Wrap"
+               VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False"
+               FontSize="16" FontWeight="Bold"/>
+            <Button Click="btnSave_Click" x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right"
+              Margin="0,0,10,14" VerticalAlignment="Bottom" Width="86" Height="32"/>
+            <Label x:Name="lblLeistungsdatum" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"
+             Content="Leistungsdatum" Margin="296,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"
+             Width="98"/>
+            <DatePicker x:Name="dtpLeistungsdatum" HorizontalAlignment="Left" Margin="393,43,0,0" VerticalAlignment="Top"
+                  Width="197"/>
+            <Button Click="btnDrucken_Click" x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right"
+              Margin="0,0,99,14" VerticalAlignment="Bottom" Width="86" Height="32" IsEnabled="False"/>
+            <ComboBox SelectionChanged="cboRabatt_SelectionChanged" x:Name="cboRabatt" HorizontalAlignment="Left"
+                Margin="78,76,0,0" VerticalAlignment="Top" Width="512"/>
+            <Label x:Name="lblRabatt" Content="Rabatt" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="22,74,0,0"
+             VerticalAlignment="Top" Width="56"/>
+            <Label x:Name="lblClient" Content="Kunde" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="11,134,0,0"
+             VerticalAlignment="Top" Width="68"/>
+            <TextBox x:Name="txtClient" HorizontalAlignment="Left" Margin="79,134,0,0" TextWrapping="Wrap"
+               VerticalAlignment="Top" Width="511" Height="26" InputScope="Number"
+               AutomationProperties.HelpText="Rechnungsnummer" IsEnabled="False"/>
+            <Label x:Name="lblRabatt1" Content="Rabatt" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,73"
+             VerticalAlignment="Bottom" Width="61"/>
+            <TextBox x:Name="txtRabatt" HorizontalAlignment="Left" Margin="79,0,0,77" TextWrapping="Wrap"
+               VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False"
+               Foreground="Red" FontSize="16" FontWeight="Bold"/>
+            <Label x:Name="lblUmsatzsteuer" Content="Steuer" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,48"
+             VerticalAlignment="Bottom" Width="62"/>
+            <TextBox x:Name="txtUmsatzsteuer" HorizontalAlignment="Left" Margin="79,0,0,52" TextWrapping="Wrap"
+               VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False"
+               Foreground="Lime" FontSize="16" FontWeight="Bold"/>
+            <Label x:Name="lblNetto" Content="Netto" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,98"
+             VerticalAlignment="Bottom" Width="61"/>
+            <TextBox x:Name="txtNetto" HorizontalAlignment="Left" Margin="79,0,0,102" TextWrapping="Wrap"
+               VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False"
+               Foreground="Lime" FontSize="16" FontWeight="Bold"/>
+            <Button Click="btnMail_Click" x:Name="btnMail" Content="Email" HorizontalAlignment="Right"
+              Margin="0,0,190,14" VerticalAlignment="Bottom" Width="86" Height="32" IsEnabled="False"/>
+            <ComboBox SelectionChanged="cboRabatt_SelectionChanged" x:Name="cboZusatztext" HorizontalAlignment="Left"
+                Margin="79,106,0,0" VerticalAlignment="Top" Width="512"/>
+            <Label x:Name="lblZusatztext" Content="Zusatz" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="23,104,0,0"
+             VerticalAlignment="Top" Width="56"/>
         </Grid>
     </Grid>
 </Window>

@@ -121,6 +121,7 @@ namespace Rechnungen
                                  (r) => RechnungTools.DeleteRechnung(context.Rechnungen, context.Rechnungsposition, r),
                                  () => ConfigTools.GetConfig(context.EmailConf, ConfTyp.Rechnung),
                                  () => context.Rabbat,
+                                 () => context.ZusatzTexte,
                                  (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen))
                                   );
 
@@ -143,6 +144,7 @@ namespace Rechnungen
                          () => RechnungTools.GetRechnungen(context.Rechnungen),
                          () => context.SaveChanges(),
                          () => context.Rabbat,
+                         () => context.ZusatzTexte,
                          (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen)),
                          () => ConfigTools.GetConfig(context.EmailConf,ConfTyp.Rechnung),
                          BenutzerTools.GetBenutzer(context.Benutzer, context.Adressen));

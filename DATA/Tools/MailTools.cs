@@ -250,6 +250,7 @@ namespace DATA.Tools
             mail.Attachments.Add(new Attachment(path));
             SmtpServer.Port = conf.Port;
             SmtpServer.Credentials = new NetworkCredential(conf.UserName, conf.password);
+            SmtpServer.EnableSsl = true;
 
             SmtpServer.Send(mail);
         }
@@ -286,7 +287,7 @@ namespace DATA.Tools
             mail.Attachments.Add(new Attachment(path));
             SmtpServer.Port = conf.Port;
             SmtpServer.Credentials = new NetworkCredential(conf.UserName, conf.password);
-
+            SmtpServer.EnableSsl = true;
             SmtpServer.Send(mail);
         }
 
