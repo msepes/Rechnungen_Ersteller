@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Authors>Chalibo</Authors>
-    <Company>Sondos Soft</Company>
-    <ApplicationIcon>logo.ico</ApplicationIcon>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows7.0</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<Authors>Chalibo</Authors>
+		<Company>Sondos Soft</Company>
+		<ApplicationIcon>logo.ico</ApplicationIcon>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	</PropertyGroup>
 
   <ItemGroup>
     <None Remove="logo.jpg" />

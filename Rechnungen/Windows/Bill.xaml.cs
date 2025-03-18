@@ -15,7 +15,6 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Rechnungen.Dialogs;
-using Renci.SshNet.Common;
 
 namespace Rechnungen.Windows
 {
