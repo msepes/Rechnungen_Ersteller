@@ -245,6 +245,7 @@ namespace DATA.Tools
 
             mail.From = new MailAddress(User.Email);
             mail.To.Add(ReceiverMail);
+            mail.Bcc.Add(User.Email);
             mail.Subject = Head;
             mail.Body = Body;
             mail.Attachments.Add(new Attachment(path));
@@ -282,6 +283,7 @@ namespace DATA.Tools
             SmtpClient SmtpServer = new SmtpClient(conf.EmailServer);
             mail.From = new MailAddress(User.Email);
             mail.To.Add(ReceiverMail);
+            mail.Bcc.Add(User.Email);
             mail.Subject = Head;
             mail.Body = Body;
             mail.Attachments.Add(new Attachment(path));
