@@ -69,7 +69,7 @@ namespace Rechnungen.Windows
 
             FillZusatztexte();
             FillRabatte();
-            fillList(Rechnung => Rechnung.ToString());
+            fillList(Rechnung => Rechnung?.ToString());
         }
 
         public void Register(Func<long, Rechnung> GetRechnung,
@@ -92,7 +92,7 @@ namespace Rechnungen.Windows
             
             FillZusatztexte();
             FillRabatte();
-            fillList(Rechnung => $"{Rechnung.Nr} - {Rechnung.Kunde.FirmaName} - {Rechnung.Datum.ToShortDateString()}");
+            fillList(Rechnung => $"{Rechnung.Nr} - {Rechnung.Kunde?.FirmaName} - {Rechnung.Datum.ToShortDateString()}");
 
             lstBox.ContextMenu.Items.Clear();
         }
@@ -139,6 +139,9 @@ namespace Rechnungen.Windows
         private void FillRabatte()
         {
             var rabatte = GetRabatte();
+            if (rabatte == null)
+                return;
+
             foreach (var rabatt in rabatte)
                 cboRabatt.Items.Add(rabatt);
         }

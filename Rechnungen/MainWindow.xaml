@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rechnungen"
         mc:Ignorable="d"
-        Title="Rechnungen" Height="310" Width="143" Icon="/logo.jpg" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
-    <Grid Margin="0,0,0,-16">
+        Title="Rechnungen" Height="318" Width="170" Icon="/logo.jpg" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+    <Grid Margin="10,0,10,6">
         <Button x:Name="OwnCompany" Content="Eigene Firma" HorizontalAlignment="Left" Height="39" Margin="10,10,0,0" VerticalAlignment="Top" Width="118" Click="OwnCompany_Click"/>
         <Button x:Name="Clients" Content="Kunden" HorizontalAlignment="Left" Height="39" Margin="10,54,0,0" VerticalAlignment="Top" Width="118" Click="Clients_Click"/>
         <Button x:Name="Bills" Content="Alle Rechnungen" HorizontalAlignment="Left" Height="39" Margin="10,98,0,0" VerticalAlignment="Top" Width="118" Click="Bills_Click"/>

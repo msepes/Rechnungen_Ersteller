@@ -139,17 +139,27 @@ namespace Rechnungen
 
         private void Bills_Click(object sender, RoutedEventArgs e)
         {
-            var frm = new Bill();
-            frm.Register((ID) => RechnungTools.GetRechnung(context.Rechnungen, ID),
-                         () => RechnungTools.GetRechnungen(context.Rechnungen),
-                         () => context.SaveChanges(),
-                         () => context.Rabbat,
-                         () => context.ZusatzTexte,
-                         (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen)),
-                         () => ConfigTools.GetConfig(context.EmailConf,ConfTyp.Rechnung),
-                         BenutzerTools.GetBenutzer(context.Benutzer, context.Adressen));
+            try
+            {
+                var frm = new Bill();
+                frm.Register((ID) => RechnungTools.GetRechnung(context.Rechnungen, ID),
+                             () => RechnungTools.GetRechnungen(context.Rechnungen),
+                             () => context.SaveChanges(),
+                             () => context.Rabbat,
+                             () => context.ZusatzTexte,
+                             (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen)),
+                             () => ConfigTools.GetConfig(context.EmailConf, ConfTyp.Rechnung),
+                             BenutzerTools.GetBenutzer(context.Benutzer, context.Adressen));
 
-            ShowWindow(frm);
+                ShowWindow(frm);
+            }
+            catch (Exception ex)
+            {
+                var nl = Environment.NewLine;
+                var msg = $"Die Operation kann nicht durchgeführt werden, folgende Fehler wurde festgestellt:{nl + nl}{ex.Message}{nl}{ex.StackTrace}{nl}{ex.InnerException?.Message}";
+                MessageBox.Show(msg, "System Meldung", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         private void Offers_Click(object sender, RoutedEventArgs e)
