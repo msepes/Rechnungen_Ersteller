@@ -212,7 +212,18 @@ namespace Rechnungen
 
                 pdfTbl.AddCell(new Phrase($"{Rechnung.Kunde.Nr}"));
                 pdfTbl.AddCell(new Phrase($"{Rechnung.Nr}"));
-                pdfTbl.AddCell(new Phrase(Rechnung.LeistungsDatum.ToShortDateString()));
+
+                if(Rechnung.LeistungsDatum != Rechnung.Datum) {
+
+                    var fst = Rechnung.LeistungsDatum > Rechnung.Datum ? Rechnung.Datum : Rechnung.LeistungsDatum;
+                    var snd = Rechnung.LeistungsDatum > Rechnung.Datum ? Rechnung.LeistungsDatum : Rechnung.Datum;
+
+                    pdfTbl.AddCell(new Phrase(Rechnung.LeistungsDatum.ToShortDateString() + " - " + Environment.NewLine + Rechnung.Datum.ToShortDateString()));
+                }
+                else {
+                    pdfTbl.AddCell(new Phrase(Rechnung.LeistungsDatum.ToShortDateString()));
+                }
+                
                 pdfTbl.AddCell(new Phrase(Rechnung.Datum.ToShortDateString()));
 
                 PdfPCell cellBlankRow = new PdfPCell(new Phrase("Bei Zahlung bitte angeben"));
