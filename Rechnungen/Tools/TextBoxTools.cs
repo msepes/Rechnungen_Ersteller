@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
-using Ubiety.Dns.Core.Records;
 
 namespace Rechnungen
 {

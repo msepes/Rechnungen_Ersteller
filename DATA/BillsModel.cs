@@ -88,6 +88,8 @@ namespace DATA
         public DateTime Datum { get; set; }
         public DateTime LeistungsDatum { get; set; }
         public Rabbat Rabbat { get; set; }
+        public ZusatzText ZusatzText { get; set; }
+
         public virtual ObservableCollection<Rechnungsposition> Positions { get; set; }
 
         public override string ToString()
@@ -200,6 +202,28 @@ namespace DATA
         }
 
 
+    }
+
+    public class ZusatzText
+    {
+        public long ID { get; set; }
+
+        public string Beschreibung { get; set; }
+
+        public string position1 { get; set; }
+
+        public string position2 { get; set; }
+
+        public string position3 { get; set; }
+
+        public string position4 { get; set; }
+
+        public string position5 { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", (object)this.Beschreibung, (object)this.ID);
+        }
     }
 
     public enum ConfTyp

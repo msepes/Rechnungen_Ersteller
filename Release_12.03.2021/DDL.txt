@@ -1,0 +1,31 @@
+CREATE TABLE `zusatztexte` (
+  `ID` bigint NOT NULL AUTO_INCREMENT,
+  `Beschreibung` text NOT NULL,
+  `position1` text,
+  `position2` text,
+  `position3` text,
+  `position4` text,
+  `position5` text,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+
+
+CREATE TABLE `rechnungen` (
+  `ID` bigint NOT NULL AUTO_INCREMENT,
+  `Nr` bigint NOT NULL,
+  `Umsatzsteuer` double NOT NULL,
+  `KundeID` bigint DEFAULT NULL,
+  `Datum` datetime NOT NULL,
+  `LeistungsDatum` datetime NOT NULL,
+  `RabbatID` bigint DEFAULT NULL,
+  `ZusatzTextID` bigint DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `IX_Rechnungen_KundeID` (`KundeID`),
+  KEY `IX_Rechnungen_RabbatID` (`RabbatID`),
+  KEY `IX_Rechnungen_ZusatzTextID` (`ZusatzTextID`),
+  CONSTRAINT `FK_Rechnungen_Kunden_KundeID` FOREIGN KEY (`KundeID`) REFERENCES `kunden` (`ID`) ON DELETE RESTRICT,
+  CONSTRAINT `FK_Rechnungen_Rabbat_RabbatID` FOREIGN KEY (`RabbatID`) REFERENCES `rabbat` (`ID`) ON DELETE RESTRICT,
+  CONSTRAINT `FK_Rechnungen_ZusatzTexte_ZusatzTextID` FOREIGN KEY (`ZusatzTextID`) REFERENCES `zusatztexte` (`ID`) ON DELETE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

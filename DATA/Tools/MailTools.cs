@@ -245,11 +245,13 @@ namespace DATA.Tools
 
             mail.From = new MailAddress(User.Email);
             mail.To.Add(ReceiverMail);
+            mail.Bcc.Add(User.Email);
             mail.Subject = Head;
             mail.Body = Body;
             mail.Attachments.Add(new Attachment(path));
             SmtpServer.Port = conf.Port;
             SmtpServer.Credentials = new NetworkCredential(conf.UserName, conf.password);
+            SmtpServer.EnableSsl = true;
 
             SmtpServer.Send(mail);
         }
@@ -281,12 +283,13 @@ namespace DATA.Tools
             SmtpClient SmtpServer = new SmtpClient(conf.EmailServer);
             mail.From = new MailAddress(User.Email);
             mail.To.Add(ReceiverMail);
+            mail.Bcc.Add(User.Email);
             mail.Subject = Head;
             mail.Body = Body;
             mail.Attachments.Add(new Attachment(path));
             SmtpServer.Port = conf.Port;
             SmtpServer.Credentials = new NetworkCredential(conf.UserName, conf.password);
-
+            SmtpServer.EnableSsl = true;
             SmtpServer.Send(mail);
         }
 

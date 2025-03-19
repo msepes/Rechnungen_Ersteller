@@ -1,0 +1,53 @@
+﻿<Window x:Class="Rechnungen.Windows.Zusatztext"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Rechnungen.Windows"
+        Title="Zusatztext" Height="543" Width="800" Icon="/logo.jpg">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="36*"/>
+            <ColumnDefinition Width="207*"/>
+            <ColumnDefinition Width="557*"/>
+        </Grid.ColumnDefinitions>
+        <GridSplitter Grid.Column="2" HorizontalAlignment="Left" Margin="0,10,0,10" Width="6"/>
+        <ListBox SelectionChanged="lstBox_SelectionChanged" x:Name="lstBox" Grid.ColumnSpan="2">
+            <FrameworkElement.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Click="New_Click" Name="NEW" Header="Neue ZusatzTexte"/>
+                    <MenuItem Click="Delete_Click" Name="DELETE" Header="ZusatzTexte löschen"/>
+                </ContextMenu>
+            </FrameworkElement.ContextMenu>
+        </ListBox>
+        <Grid x:Name="panel1" Column="2" Margin="11,0,0,0">
+            <Label x:Name="lblpos1" Content="Position1" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="11,39,0,0"
+             VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="txtpos1" Margin="101,39,11,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="77"/>
+            <Label x:Name="lblpos2" Content="Position2" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="11,121,0,0"
+             VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="txtpos2" Margin="101,121,11,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="77"/>
+            <Label x:Name="lblpos3" Content="Position3" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="13,203,0,0"
+             VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="txtpos3" Margin="103,203,9,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="77"/>
+            <Label x:Name="lblpos4" Content="Position4" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="13,285,0,0"
+             VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="txtpos4" Margin="103,285,9,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="77"/>
+            <Label x:Name="lblpos5" Content="Position5" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="13,367,0,0"
+             VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="txtpos5" Margin="103,367,9,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="78"/>
+            <Button Click="btnSave_Click" x:Name="btnSave" Content="Speichern" HorizontalAlignment="Right"
+              Margin="0,465,9,0" VerticalAlignment="Top" Width="86" Height="32"/>
+            <Label x:Name="lblBeschreibung" Content="Beschreibung" HorizontalContentAlignment="Right"
+             VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,6,0,0"
+             VerticalAlignment="Top" Width="85"/>
+            <TextBox x:Name="txtBeschreibung" Margin="101,6,11,0" TextWrapping="Wrap" VerticalAlignment="Top"
+               Height="26"/>
+        </Grid>
+    </Grid>
+</Window>

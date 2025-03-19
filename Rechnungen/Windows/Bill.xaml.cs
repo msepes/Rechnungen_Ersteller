@@ -15,7 +15,6 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Rechnungen.Dialogs;
-using Renci.SshNet.Common;
 
 namespace Rechnungen.Windows
 {
@@ -29,6 +28,7 @@ namespace Rechnungen.Windows
         private Action<Rechnung> DeleteRechnung;
         private Func<IEnumerable<Rechnung>> GetRechnungen;
         private Func<IEnumerable<Rabbat>> GetRabatte;
+        private Func<IEnumerable<ZusatzText>> GetZusatztexte;
         private Func<Rechnung, string> Print;
         private Func<EmailConf> GetConf;
         private Action Save;
@@ -49,6 +49,7 @@ namespace Rechnungen.Windows
                              Action Save,
                              Action<Rechnung> DeleteRechnung,
                              Func<IEnumerable<Rabbat>> GetRabatte,
+                             Func<IEnumerable<ZusatzText>> GetZusatztexte,
                              Func<Rechnung, string> Print,
                              Func<EmailConf> GetConf,
                              Benutzer User)
@@ -59,20 +60,23 @@ namespace Rechnungen.Windows
             this.DeleteRechnung = DeleteRechnung;
             this.GetRechnungen = GetRechnungen;
             this.GetRabatte = GetRabatte;
+            this.GetZusatztexte = GetZusatztexte;
             this.Print = Print;
             this.Save = Save;
             this.User = User;
             this.GetConf = GetConf;
 
 
+            FillZusatztexte();
             FillRabatte();
-            fillList(Rechnung => Rechnung.ToString());
+            fillList(Rechnung => Rechnung?.ToString());
         }
 
         public void Register(Func<long, Rechnung> GetRechnung,
                              Func<IEnumerable<Rechnung>> GetRechnungen,
                              Action Save,
                              Func<IEnumerable<Rabbat>> GetRabatte,
+                             Func<IEnumerable<ZusatzText>> GetZusatztexte,
                              Func<Rechnung, string> Print,
                              Func<EmailConf> GetConf,
                              Benutzer User)
@@ -80,12 +84,15 @@ namespace Rechnungen.Windows
             this.GetRechnung = GetRechnung;
             this.GetRechnungen = GetRechnungen;
             this.GetRabatte = GetRabatte;
+            this.GetZusatztexte = GetZusatztexte;
             this.Print = Print;
             this.Save = Save;
             this.User = User;
             this.GetConf = GetConf;
+            
+            FillZusatztexte();
             FillRabatte();
-            fillList(Rechnung => $"{Rechnung.Nr} - {Rechnung.Kunde.FirmaName} - {Rechnung.Datum.ToShortDateString()}");
+            fillList(Rechnung => $"{Rechnung.Nr} - {Rechnung.Kunde?.FirmaName} - {Rechnung.Datum.ToShortDateString()}");
 
             lstBox.ContextMenu.Items.Clear();
         }
@@ -132,6 +139,9 @@ namespace Rechnungen.Windows
         private void FillRabatte()
         {
             var rabatte = GetRabatte();
+            if (rabatte == null)
+                return;
+
             foreach (var rabatt in rabatte)
                 cboRabatt.Items.Add(rabatt);
         }
@@ -144,6 +154,8 @@ namespace Rechnungen.Windows
             BindControl(nameof(Rechnung.LeistungsDatum), Rechnung, dtpLeistungsdatum);
             BindControl(nameof(Rechnung.Datum), Rechnung, dtpDatum);
             BindControl(nameof(Rechnung.Rabbat), Rechnung, cboRabatt);
+            Binder.BindControl(nameof(Rechnung.ZusatzText), Rechnung, cboZusatztext);
+
             BindGrid(Rechnung);
         }
 
@@ -154,7 +166,15 @@ namespace Rechnungen.Windows
             Clear(dtpLeistungsdatum);
             Clear(dtpDatum);
             Clear(cboRabatt);
+            Clear(cboZusatztext);
             Clear(dgrPositionen);
+        }
+
+
+        private void FillZusatztexte()
+        {
+            foreach (object newItem in this.GetZusatztexte())
+                this.cboZusatztext.Items.Add(newItem);
         }
 
         private void btnDrucken_Click(object sender, RoutedEventArgs e)

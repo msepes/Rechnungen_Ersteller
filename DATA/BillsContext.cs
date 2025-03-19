@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace DATA
@@ -25,6 +27,8 @@ namespace DATA
         public DbSet<Angebot> Angebote { get; set; }
         public DbSet<Angebotsposition> Angebotsposition { get; set; }
         public DbSet<EmailConf> EmailConf { get; set; }
+        public DbSet<ZusatzText> ZusatzTexte { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -83,6 +87,7 @@ namespace DATA
                   .WithMany(p => p.Rechnungen);
 
                 entity.HasOne(d => d.Rabbat);
+                entity.HasOne(d => d.ZusatzText);
             });
 
             modelBuilder.Entity<Angebot>(entity =>
@@ -128,6 +133,12 @@ namespace DATA
                 entity.Property(e => e.Vorname).IsRequired();
                 entity.Property(e => e.FirmaName).IsRequired();
                 entity.HasOne(d => d.addresse);
+            });
+
+            modelBuilder.Entity<ZusatzText>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+                entity.Property(e => e.Beschreibung).IsRequired();
             });
         }
 

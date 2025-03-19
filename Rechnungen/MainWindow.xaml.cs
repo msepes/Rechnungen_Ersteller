@@ -1,5 +1,6 @@
 ﻿using Angeboten;
 using DATA;
+using DATA.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Rechnungen.Dialogs;
@@ -120,6 +121,7 @@ namespace Rechnungen
                                  (r) => RechnungTools.DeleteRechnung(context.Rechnungen, context.Rechnungsposition, r),
                                  () => ConfigTools.GetConfig(context.EmailConf, ConfTyp.Rechnung),
                                  () => context.Rabbat,
+                                 () => context.ZusatzTexte,
                                  (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen))
                                   );
 
@@ -137,16 +139,27 @@ namespace Rechnungen
 
         private void Bills_Click(object sender, RoutedEventArgs e)
         {
-            var frm = new Bill();
-            frm.Register((ID) => RechnungTools.GetRechnung(context.Rechnungen, ID),
-                         () => RechnungTools.GetRechnungen(context.Rechnungen),
-                         () => context.SaveChanges(),
-                         () => context.Rabbat,
-                         (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen)),
-                         () => ConfigTools.GetConfig(context.EmailConf,ConfTyp.Rechnung),
-                         BenutzerTools.GetBenutzer(context.Benutzer, context.Adressen));
+            try
+            {
+                var frm = new Bill();
+                frm.Register((ID) => RechnungTools.GetRechnung(context.Rechnungen, ID),
+                             () => RechnungTools.GetRechnungen(context.Rechnungen),
+                             () => context.SaveChanges(),
+                             () => context.Rabbat,
+                             () => context.ZusatzTexte,
+                             (rechnung) => RechnungTools.PrintBill(rechnung, GetBenutzer(context.Benutzer, context.Adressen)),
+                             () => ConfigTools.GetConfig(context.EmailConf, ConfTyp.Rechnung),
+                             BenutzerTools.GetBenutzer(context.Benutzer, context.Adressen));
 
-            ShowWindow(frm);
+                ShowWindow(frm);
+            }
+            catch (Exception ex)
+            {
+                var nl = Environment.NewLine;
+                var msg = $"Die Operation kann nicht durchgeführt werden, folgende Fehler wurde festgestellt:{nl + nl}{ex.Message}{nl}{ex.StackTrace}{nl}{ex.InnerException?.Message}";
+                MessageBox.Show(msg, "System Meldung", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         private void Offers_Click(object sender, RoutedEventArgs e)
@@ -174,6 +187,18 @@ namespace Rechnungen
             ShowWindow(frm);
         }
 
+        private void Zusatztext_Click(object sender, RoutedEventArgs e)
+        {
+            Zusatztext zusatztext = new Zusatztext();
+            zusatztext.Register(() => ZusatzTexteTools.NewRabatt(MainWindow.context.ZusatzTexte), 
+                                ID => ZusatzTexteTools.GetZusatzText(MainWindow.context.ZusatzTexte, ID), 
+                                () => ZusatzTexteTools.GetZusatzTexte(MainWindow.context.ZusatzTexte), 
+                                r => ZusatzTexteTools.DeleteRabatt(MainWindow.context.ZusatzTexte, MainWindow.context.Rechnungen, r),
+                                () => MainWindow.context.SaveChanges());
+
+            MainWindow.ShowWindow((Window)zusatztext);
+        }
+
         public static void ShowWindow(Window window) 
         {
             try
@@ -185,6 +210,7 @@ namespace Rechnungen
                 RechnungTools.AcceptChanges();
                 OfferTools.AcceptChanges();
                 ClientsTools.AcceptChanges();
+                ZusatzTexteTools.AcceptChanges();
             }
             catch (Exception ex)
             {
