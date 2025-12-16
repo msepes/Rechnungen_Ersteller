@@ -1,0 +1,140 @@
+<Window x:Class="Rechnungen.Windows.BillPrintLayout"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Rechnungsdruck" Height="950" Width="720" Icon="/logo.jpg">
+    <Grid Background="#f7f7f7">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="10" Grid.Row="0">
+            <Button x:Name="btnPrint" Width="110" Height="32" Margin="0,0,10,0" Content="Drucken"
+                    Click="btnPrint_Click" HorizontalAlignment="Left"/>
+            <Button x:Name="btnClose" Width="110" Height="32" Content="Schließen" Click="btnClose_Click"/>
+        </DockPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="10" VerticalScrollBarVisibility="Auto">
+            <Border Background="White" Padding="20" BorderThickness="1" BorderBrush="#DDD" CornerRadius="6">
+                <Grid x:Name="LayoutRoot" Margin="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock Text="Rechnung" FontSize="26" FontWeight="Bold"/>
+                            <TextBlock Text="Rechnungsnummer" FontWeight="SemiBold"/>
+                            <TextBox Text="" x:Name="txtRechnungsNummer" MinWidth="160"/>
+                            <TextBlock Text="Datum" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox Text="" x:Name="txtRechnungsDatum"/>
+                            <TextBlock Text="Leistungsdatum" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            <TextBox Text="" x:Name="txtLeistungsdatum"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Right" Spacing="4" Width="300">
+                            <TextBlock Text="Eigene Firma" FontWeight="SemiBold"/>
+                            <TextBox x:Name="txtFirma" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <TextBox x:Name="txtAdresse" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <TextBox x:Name="txtKontakt" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <TextBox x:Name="txtBank" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Kunde -->
+                    <Border Grid.Row="1" Background="#f0f4ff" Padding="12" CornerRadius="4" BorderBrush="#d5def7" BorderThickness="1" Margin="0,0,0,16">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Kunde" FontSize="16" FontWeight="SemiBold"/>
+                            <TextBox x:Name="txtKunde" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <TextBox x:Name="txtKundenAdresse" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <TextBox x:Name="txtKundenKontakt" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Freier Text oben -->
+                    <StackPanel Grid.Row="2" Margin="0,0,0,16">
+                        <TextBlock Text="Freier Text (oben)" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <TextBox x:Name="txtFreitextOben" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"/>
+                    </StackPanel>
+
+                    <!-- Positionen -->
+                    <StackPanel Grid.Row="3" Margin="0,0,0,16">
+                        <TextBlock Text="Leistungspositionen" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                          <DataGrid x:Name="dgPositionen" AutoGenerateColumns="False" HeadersVisibility="Column"
+                                    IsReadOnly="False" CanUserAddRows="True" CanUserDeleteRows="True" Margin="0,4,0,0"
+                                    RowEditEnding="dgPositionen_RowEditEnding">
+                              <DataGrid.Columns>
+                                  <DataGridTextColumn Header="#" Binding="{Binding Nummer}" Width="60"/>
+                                  <DataGridTextColumn Header="Beschreibung" Binding="{Binding Beschreibung}" Width="*"/>
+                                  <DataGridTextColumn Header="Menge" Binding="{Binding Menge}" Width="100"/>
+                                  <DataGridTextColumn Header="Einzelpreis" Binding="{Binding Einzelpreis}" Width="120"/>
+                                  <DataGridTextColumn Header="Gesamt" Binding="{Binding Gesamt}" Width="120"/>
+                              </DataGrid.Columns>
+                          </DataGrid>
+                      </StackPanel>
+
+                    <!-- Summen -->
+                    <Grid Grid.Row="4" Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="260"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" Spacing="6" HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" JustifyContent="SpaceBetween">
+                                <TextBlock Text="Netto"/>
+                                <TextBox x:Name="txtNetto" FontWeight="SemiBold" TextAlignment="Right" MinWidth="140"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" JustifyContent="SpaceBetween">
+                                <TextBlock Text="Rabatt"/>
+                                <TextBox x:Name="txtRabatt" FontWeight="SemiBold" TextAlignment="Right" MinWidth="140"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" JustifyContent="SpaceBetween">
+                                <TextBlock Text="Umsatzsteuer"/>
+                                <TextBox x:Name="txtSteuer" FontWeight="SemiBold" TextAlignment="Right" MinWidth="140"/>
+                            </StackPanel>
+                            <Border BorderBrush="#222" BorderThickness="0,0,0,1" Margin="0,4"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" JustifyContent="SpaceBetween">
+                                <TextBlock Text="Gesamt" FontSize="16" FontWeight="Bold"/>
+                                <TextBox x:Name="txtGesamt" FontSize="16" FontWeight="Bold" TextAlignment="Right" MinWidth="140"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Freier Text unten -->
+                    <StackPanel Grid.Row="5" Margin="0,0,0,16">
+                        <TextBlock Text="Freier Text (unten)" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <TextBox x:Name="txtFreitextUnten" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="120"/>
+                    </StackPanel>
+
+                    <!-- Abschluss -->
+                        <StackPanel Grid.Row="6" Margin="0,0,0,12" Spacing="4">
+                            <TextBlock Text="Dank für Ihr Vertrauen" FontWeight="SemiBold"/>
+                            <TextBox x:Name="txtSignature" Height="60" TextWrapping="Wrap" AcceptsReturn="True"
+                                     ToolTip="Unterschrift"/>
+                        </StackPanel>
+
+                    <!-- Fußzeile -->
+                        <StackPanel Grid.Row="7" Spacing="2">
+                            <TextBlock Text="Bank- und Kontaktinformationen" FontWeight="SemiBold"/>
+                            <TextBox x:Name="txtFooterBank" TextWrapping="Wrap" AcceptsReturn="True"/>
+                            <TextBox x:Name="txtFooterKontakt" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                </Grid>
+            </Border>
+        </ScrollViewer>
+    </Grid>
+</Window>
