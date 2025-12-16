@@ -15,6 +15,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Rechnungen.Dialogs;
+using Rechnungen.Windows;
 
 namespace Rechnungen.Windows
 {
@@ -212,6 +213,7 @@ namespace Rechnungen.Windows
 
             btnDrucken.IsEnabled = ID.HasValue;
             btnMail.IsEnabled = ID.HasValue;
+            btnLayout.IsEnabled = ID.HasValue;
 
             if (!ID.HasValue)
                 return;
@@ -351,6 +353,24 @@ namespace Rechnungen.Windows
         private void dgrPositionen_CurrentCellChanged(object sender, EventArgs e)
         {
             SetSummenAnzeige();
+        }
+
+        private void btnLayout_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelectedRechnung();
+
+            if (selected == null)
+            {
+                MessageBox.Show("Bitte wählen Sie zuerst eine Rechnung aus.", "Rechnungslayout", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var layout = new BillPrintLayout(selected, User)
+            {
+                Owner = this
+            };
+
+            layout.ShowDialog();
         }
     }
 }

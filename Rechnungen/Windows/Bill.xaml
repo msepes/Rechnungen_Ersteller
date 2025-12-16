@@ -57,6 +57,8 @@
                   Width="197"/>
             <Button Click="btnDrucken_Click" x:Name="btnDrucken" Content="Drucken" HorizontalAlignment="Right"
               Margin="0,0,99,14" VerticalAlignment="Bottom" Width="86" Height="32" IsEnabled="False"/>
+            <Button Click="btnLayout_Click" x:Name="btnLayout" Content="Layout" HorizontalAlignment="Right"
+              Margin="0,0,190,14" VerticalAlignment="Bottom" Width="86" Height="32" IsEnabled="False"/>
             <ComboBox SelectionChanged="cboRabatt_SelectionChanged" x:Name="cboRabatt" HorizontalAlignment="Left"
                 Margin="78,76,0,0" VerticalAlignment="Top" Width="512"/>
             <Label x:Name="lblRabatt" Content="Rabatt" HorizontalContentAlignment="Right"
@@ -87,7 +89,7 @@
                VerticalAlignment="Bottom" Width="195" IsReadOnlyCaretVisible="True" IsEnabled="False"
                Foreground="Lime" FontSize="16" FontWeight="Bold"/>
             <Button Click="btnMail_Click" x:Name="btnMail" Content="Email" HorizontalAlignment="Right"
-              Margin="0,0,190,14" VerticalAlignment="Bottom" Width="86" Height="32" IsEnabled="False"/>
+              Margin="0,0,281,14" VerticalAlignment="Bottom" Width="86" Height="32" IsEnabled="False"/>
             <ComboBox SelectionChanged="cboRabatt_SelectionChanged" x:Name="cboZusatztext" HorizontalAlignment="Left"
                 Margin="79,106,0,0" VerticalAlignment="Top" Width="512"/>
             <Label x:Name="lblZusatztext" Content="Zusatz" HorizontalContentAlignment="Right"
