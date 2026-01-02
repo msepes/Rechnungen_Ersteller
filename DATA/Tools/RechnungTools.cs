@@ -458,7 +458,7 @@ namespace Rechnungen
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.Phrase = new Phrase(Benutzer.addresse.ToString(), infFont);
+                pdfCell.Phrase = new Phrase($"{Benutzer.addresse.Strasse} {Benutzer.addresse.HasuNr}", infFont);
                 pdfCell.Border = Rectangle.NO_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
@@ -473,12 +473,11 @@ namespace Rechnungen
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.Phrase = new Phrase("", infFont);
+                pdfCell.Phrase = new Phrase($"{Benutzer.addresse.PLZ} {Benutzer.addresse.Ort}", infFont);
                 pdfCell.Border = Rectangle.NO_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.Phrase = new Phrase("", infFont);
                 pdfCell.Border = Rectangle.NO_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
