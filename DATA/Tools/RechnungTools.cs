@@ -1,4 +1,4 @@
-﻿using DATA;
+using DATA;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.draw;
@@ -399,8 +399,10 @@ namespace Rechnungen
 
                 Final.Add(new Chunk("Mit freundlichen Grüßen."));
                 Final.Add(lBreak);
+                Final.Add(new Chunk($"{Benutzer.Vorname} {Benutzer.Name}"));
                 Final.Add(lBreak);
-                Final.Add(new Chunk("MaxClean"));
+                Final.Add(lBreak);
+                Final.Add(new Chunk(Benutzer.FirmaName));
                 Final.Add(lBreak);
                 Final.Add(new Chunk($"Besuchen Sie uns auf {Benutzer.Web}"));
                 doc.Add(Final);
@@ -435,7 +437,7 @@ namespace Rechnungen
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.Phrase = new Phrase(Benutzer.BankName, infFont);
+                pdfCell.Phrase = new Phrase($"{Benutzer.Vorname} {Benutzer.Name}", infFont);
                 pdfCell.Border = Rectangle.NO_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
@@ -451,7 +453,7 @@ namespace Rechnungen
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.Phrase = new Phrase($"IBAN: {Benutzer.IBAN}", infFont);
+                pdfCell.Phrase = new Phrase(Benutzer.BankName, infFont);
                 pdfCell.Border = Rectangle.NO_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
@@ -466,10 +468,24 @@ namespace Rechnungen
                 pdfTbl.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell();
-                pdfCell.Phrase = new Phrase($"BIC: {Benutzer.BIC}", infFont);
+                pdfCell.Phrase = new Phrase($"IBAN: {Benutzer.IBAN}", infFont);
                 pdfCell.Border = Rectangle.NO_BORDER;
                 pdfTbl.AddCell(pdfCell);
 
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase("", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase("", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell();
+                pdfCell.Phrase = new Phrase($"BIC: {Benutzer.BIC}", infFont);
+                pdfCell.Border = Rectangle.NO_BORDER;
+                pdfTbl.AddCell(pdfCell);
                 doc.Add(pdfTbl);
 
                 return Pfad;
